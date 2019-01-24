@@ -24,12 +24,13 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 		v(ops)
 	}
 
-	ctx := &ContainerContext{imageId: image, client: c}
+	ctx := &ContainerContext{client: c}
 
 	reader, err := c.c.ImagePull(context.Background(), image, types.ImagePullOptions{})
 	if err != nil {
 		return ctx, errors.Wrap(err, "pull image")
 	}
+	ctx.imageId = image
 	if ops.logger != nil {
 		_, _ = io.Copy(ops.logger, reader)
 	}
@@ -67,6 +68,10 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 	}
 
 	return ctx, nil
+}
+
+func (c *ispDockerClient) RunAppContainer(image string, localConfig interface{}) (*ContainerContext, error) {
+
 }
 
 func NewClient() (*ispDockerClient, error) {

@@ -10,6 +10,14 @@
   version = "v0.4.11"
 
 [[projects]]
+  digest = "1:320e7ead93de9fd2b0e59b50fd92a4d50c1f8ab455d96bc2eb083267453a9709"
+  name = "github.com/asaskevich/govalidator"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ccb8e960c48f04d6935e72476ae4a51028f9e22f"
+  version = "v9"
+
+[[projects]]
   digest = "1:4ddc17aeaa82cb18c5f0a25d7c253a10682f518f4b2558a82869506eec223d76"
   name = "github.com/docker/distribution"
   packages = [
@@ -67,6 +75,29 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:b0ddbad880d26589b9de3934e4d149ef8e0db27b4aab873304dd17350818f29d"
+  name = "github.com/doublerebel/bellows"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f177d92a03d33226a1e1777e4b3a5d824bd2598f"
+
+[[projects]]
+  digest = "1:33ed5e4977aa41d90a7944c173080c9cf6c5ecba2419ff7c8e1385f16a67bc8c"
+  name = "github.com/golang/protobuf"
+  packages = [
+    "proto",
+    "ptypes",
+    "ptypes/any",
+    "ptypes/duration",
+    "ptypes/struct",
+    "ptypes/timestamp",
+  ]
+  pruneopts = "UT"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
+
+[[projects]]
+  branch = "master"
   digest = "1:324591cd9122f94cc39a87bd44ec71153672c239e2cff5743bfad96b60be3749"
   name = "github.com/googollee/go-engine.io"
   packages = [
@@ -95,6 +126,44 @@
   pruneopts = "UT"
   revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
   version = "v1.4.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3c5764c4a479c2447c07493a9a6b75c3a833c624b6c030e1c15ba07fd430030a"
+  name = "github.com/integration-system/isp-lib"
+  packages = [
+    "structure",
+    "utils",
+  ]
+  pruneopts = "UT"
+  revision = "79b698fc47ec9ecae1a77e31a25d7c6f4502ff0c"
+
+[[projects]]
+  digest = "1:5d713dbcad44f3358fec51fd5573d4f733c02cac5a40dcb177787ad5ffe9272f"
+  name = "github.com/json-iterator/go"
+  packages = [
+    ".",
+    "extra",
+  ]
+  pruneopts = "UT"
+  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
+  version = "v1.1.5"
+
+[[projects]]
+  digest = "1:33422d238f147d247752996a26574ac48dcf472976eda7f5134015f06bf16563"
+  name = "github.com/modern-go/concurrent"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+  version = "1.0.3"
+
+[[projects]]
+  digest = "1:e32bdbdb7c377a07a9a46378290059822efdce5c8d96fe71940d87cb4f918855"
+  name = "github.com/modern-go/reflect2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
+  version = "1.0.1"
 
 [[projects]]
   digest = "1:ee4d4af67d93cc7644157882329023ce9a7bcfce956a079069a9405521c7cc8d"
@@ -133,6 +202,30 @@
   pruneopts = "UT"
   revision = "b90733256f2e882e81d52f9126de08df5615afd9"
 
+[[projects]]
+  branch = "master"
+  digest = "1:bb1d7b9f535fd3f634440825c1ee5c36b3f2c12318a6152ea2575d31f5a7502a"
+  name = "google.golang.org/genproto"
+  packages = [
+    "googleapis/rpc/errdetails",
+    "googleapis/rpc/status",
+  ]
+  pruneopts = "UT"
+  revision = "8819c946db4494a2259bf100a377f51aa585d893"
+
+[[projects]]
+  digest = "1:8cfdd3367cd9e60a9ea5f33ec3a3555a88a819909b7477495b2e8037dad42be4"
+  name = "google.golang.org/grpc"
+  packages = [
+    "codes",
+    "metadata",
+    "stats",
+    "status",
+  ]
+  pruneopts = "UT"
+  revision = "a02b0774206b209466313a0b525d2c738fe407eb"
+  version = "v1.18.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -140,7 +233,10 @@
     "github.com/docker/docker/api/types",
     "github.com/docker/docker/api/types/container",
     "github.com/docker/docker/client",
+    "github.com/doublerebel/bellows",
     "github.com/googollee/go-socket.io",
+    "github.com/integration-system/isp-lib/structure",
+    "github.com/integration-system/isp-lib/utils",
     "github.com/pkg/errors",
   ]
   solver-name = "gps-cdcl"
