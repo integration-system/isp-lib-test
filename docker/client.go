@@ -29,7 +29,7 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 }
 
 func (c *ispDockerClient) RunAppContainer(image string, localConfig interface{}, opts ...Option) (*ContainerContext, error) {
-	vars := configToEnvVariables(localConfig, config.EnvPrefix+"_")
+	vars := configToEnvVariables(localConfig, config.EnvPrefix)
 	return c.runContainer(image, vars, opts...)
 }
 
