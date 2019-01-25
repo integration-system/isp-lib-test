@@ -19,6 +19,8 @@ type options struct {
 	env []string
 
 	name string
+
+	network string
 }
 
 type Option func(opts *options)
@@ -68,5 +70,11 @@ func WithEnv(vars map[string]string) Option {
 func WithName(containerName string) Option {
 	return func(opts *options) {
 		opts.name = containerName
+	}
+}
+
+func WithNetwork(ctx *NetworkContext) Option {
+	return func(opts *options) {
+		opts.network = ctx.id
 	}
 }

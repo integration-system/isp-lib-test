@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	"github.com/integration-system/isp-lib/config"
 	"github.com/pkg/errors"
@@ -31,6 +32,18 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 func (c *ispDockerClient) RunAppContainer(image string, localConfig interface{}, opts ...Option) (*ContainerContext, error) {
 	vars := configToEnvVariables(localConfig, config.EnvPrefix)
 	return c.runContainer(image, vars, opts...)
+}
+
+func (c *ispDockerClient) CreateNetwork(name string) (*NetworkContext, error) {
+	ctx := &NetworkContext{}
+
+	net, err := c.c.NetworkCreate(context.Background(), name, types.NetworkCreate{})
+	if err != nil {
+		return ctx, errors.Wrap(err, "network create")
+	}
+	ctx.id = net.ID
+
+	return ctx, nil
 }
 
 func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...Option) (*ContainerContext, error) {
@@ -60,11 +73,17 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 	resp, err := c.c.ContainerCreate(context.Background(), &container.Config{
 		Image: image,
 		Env:   envVars,
-	}, nil, nil, ops.name)
+	}, nil, &network.NetworkingConfig{}, ops.name)
 	if err != nil {
 		return ctx, errors.Wrap(err, "create container")
 	}
 	ctx.containerId = resp.ID
+
+	if ops.network != "" {
+		if err := c.c.NetworkConnect(context.Background(), ops.network, resp.ID, nil); err != nil {
+			return ctx, errors.Wrap(err, "network connect")
+		}
+	}
 
 	err = c.c.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{})
 	if err != nil {
