@@ -48,6 +48,7 @@ func DefaultDbConfiguration() database.DBConfiguration {
 		Schema:       "config-service",
 		Database:     "isp-test",
 		Username:     "isp-test",
+		Password:     "123321",
 		CreateSchema: true,
 	}
 }
