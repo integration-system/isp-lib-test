@@ -22,7 +22,7 @@ type ConfigServiceLocalConfiguration struct {
 
 func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
 	dbCfg := DefaultDbConfiguration()
-	dbCfg.Schema = "config-service"
+	dbCfg.Schema = "config_service"
 	return ConfigServiceLocalConfiguration{
 		Database: dbCfg,
 		GrpcOuterAddress: structure.AddressConfiguration{
