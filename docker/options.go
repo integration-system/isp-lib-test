@@ -17,6 +17,8 @@ type options struct {
 	portMapping   nat.PortSet
 
 	env []string
+
+	name string
 }
 
 type Option func(opts *options)
@@ -60,5 +62,11 @@ func WithEnv(vars map[string]string) Option {
 	}
 	return func(opts *options) {
 		opts.env = arr
+	}
+}
+
+func WithName(containerName string) Option {
+	return func(opts *options) {
+		opts.name = containerName
 	}
 }
