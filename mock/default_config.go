@@ -10,6 +10,13 @@ const (
 	DefaultConfigServicePort = "9001"
 )
 
+var (
+	DefaultConfigServiceAddress = structure.AddressConfiguration{
+		IP:   DefaultConfigServiceHost,
+		Port: DefaultConfigServicePort,
+	}
+)
+
 type ConfigServiceLocalConfiguration struct {
 	Database         database.DBConfiguration
 	GrpcOuterAddress structure.AddressConfiguration

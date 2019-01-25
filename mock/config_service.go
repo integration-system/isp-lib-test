@@ -11,10 +11,6 @@ import (
 	"sync"
 )
 
-const (
-	DefaultConfigServiceAddress = "127.0.0.1:9001"
-)
-
 type ConfigServiceOption func(cs *mockConfigService)
 
 type mockConfigService struct {
