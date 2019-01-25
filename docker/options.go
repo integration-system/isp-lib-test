@@ -3,7 +3,9 @@ package docker
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/go-connections/nat"
 	"io"
 )
 
@@ -12,6 +14,9 @@ type options struct {
 
 	pullImage     bool
 	registryCreds string
+	portMapping   nat.PortSet
+
+	env []string
 }
 
 type Option func(opts *options)
@@ -34,5 +39,26 @@ func PullImage(registryLogin string, registryPassword string) Option {
 			encodedJSON, _ := json.Marshal(authConfig)
 			opts.registryCreds = base64.URLEncoding.EncodeToString(encodedJSON)
 		}
+	}
+}
+
+func WithPortMapping(mapping map[string]string) Option {
+	arr := make([]string, 0, len(mapping))
+	for pub, priv := range mapping {
+		arr = append(arr, fmt.Sprintf("%s:%s", pub, priv))
+	}
+	set, _, _ := nat.ParsePortSpecs(arr)
+	return func(opts *options) {
+		opts.portMapping = set
+	}
+}
+
+func WithEnv(vars map[string]string) Option {
+	arr := make([]string, 0, len(vars))
+	for k, v := range vars {
+		arr = append(arr, fmt.Sprintf("%s=%s", k, v))
+	}
+	return func(opts *options) {
+		opts.env = arr
 	}
 }

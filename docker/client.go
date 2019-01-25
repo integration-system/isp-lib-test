@@ -24,6 +24,7 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 		fmt.Sprintf("POSTGRES_USER=%s", dbAndUserName),
 		fmt.Sprintf("POSTGRES_PASSWORD=%s", password),
 	}
+	opts = append(opts, WithPortMapping(map[string]string{"5432": "5432"}))
 	return c.runContainer(image, vars, opts...)
 }
 
@@ -55,6 +56,7 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 		}
 	}
 
+	envVars = append(envVars, ops.env...)
 	resp, err := c.c.ContainerCreate(context.Background(), &container.Config{
 		Image: image,
 		Env:   envVars,
