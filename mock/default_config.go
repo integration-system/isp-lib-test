@@ -8,6 +8,8 @@ import (
 const (
 	DefaultConfigServiceHost = "isp-config-service"
 	DefaultConfigServicePort = "9001"
+
+	DefaultIspInstanceId = "bf482806-0c3d-4e0d-b9d4-12c037b12d70"
 )
 
 type ConfigServiceLocalConfiguration struct {
