@@ -6,6 +6,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/integration-system/isp-lib/config"
 	"github.com/pkg/errors"
 	"io"
 )
@@ -18,30 +19,45 @@ func (c *ispDockerClient) Close() error {
 	return c.c.Close()
 }
 
-func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, password string, opts ...RunPGOption) (*ContainerContext, error) {
-	ops := &runPgOptions{}
+func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, password string, opts ...Option) (*ContainerContext, error) {
+	vars := []string{
+		fmt.Sprintf("POSTGRES_USER=%s", dbAndUserName),
+		fmt.Sprintf("POSTGRES_PASSWORD=%s", password),
+	}
+	return c.runContainer(image, vars, opts...)
+}
+
+func (c *ispDockerClient) RunAppContainer(image string, localConfig interface{}, opts ...Option) (*ContainerContext, error) {
+	vars := configToEnvVariables(localConfig, config.EnvPrefix+"_")
+	return c.runContainer(image, vars, opts...)
+}
+
+func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...Option) (*ContainerContext, error) {
+	ops := &options{}
 	for _, v := range opts {
 		v(ops)
 	}
 
 	ctx := &ContainerContext{client: c}
 
-	reader, err := c.c.ImagePull(context.Background(), image, types.ImagePullOptions{})
-	if err != nil {
-		return ctx, errors.Wrap(err, "pull image")
-	}
-	ctx.imageId = image
-	if ops.logger != nil {
-		_, _ = io.Copy(ops.logger, reader)
+	if ops.pullImage {
+		pullOpts := types.ImagePullOptions{}
+		if ops.registryCreds != "" {
+			pullOpts.RegistryAuth = ops.registryCreds
+		}
+		reader, err := c.c.ImagePull(context.Background(), image, pullOpts)
+		if err != nil {
+			return ctx, errors.Wrap(err, "pull image")
+		}
+		ctx.imageId = image
+		if ops.logger != nil {
+			_, _ = io.Copy(ops.logger, reader)
+		}
 	}
 
-	vars := []string{
-		fmt.Sprintf("POSTGRES_USER=%s", dbAndUserName),
-		fmt.Sprintf("POSTGRES_PASSWORD=%s", password),
-	}
 	resp, err := c.c.ContainerCreate(context.Background(), &container.Config{
 		Image: image,
-		Env:   vars,
+		Env:   envVars,
 	}, nil, nil, "")
 	if err != nil {
 		return ctx, errors.Wrap(err, "create container")
@@ -68,10 +84,6 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 	}
 
 	return ctx, nil
-}
-
-func (c *ispDockerClient) RunAppContainer(image string, localConfig interface{}) (*ContainerContext, error) {
-
 }
 
 func NewClient() (*ispDockerClient, error) {
