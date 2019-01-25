@@ -21,8 +21,10 @@ type ConfigServiceLocalConfiguration struct {
 }
 
 func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
+	dbCfg := DefaultDbConfiguration()
+	dbCfg.Schema = "config-service"
 	return ConfigServiceLocalConfiguration{
-		Database: DefaultDbConfiguration(),
+		Database: dbCfg,
 		GrpcOuterAddress: structure.AddressConfiguration{
 			IP:   DefaultConfigServiceHost,
 			Port: "9002",
@@ -45,7 +47,6 @@ func DefaultDbConfiguration() database.DBConfiguration {
 	return database.DBConfiguration{
 		Address:      "isp-pg",
 		Port:         "5432",
-		Schema:       "config-service",
 		Database:     "isp-test",
 		Username:     "isp-test",
 		Password:     "123321",
