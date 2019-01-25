@@ -47,7 +47,7 @@ func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
 
 func DefaultDbConfiguration() database.DBConfiguration {
 	return database.DBConfiguration{
-		Address:      "isp-pg",
+		Address:      "isp-pgsql",
 		Port:         "5432",
 		Database:     "isp-test",
 		Username:     "isp-test",
