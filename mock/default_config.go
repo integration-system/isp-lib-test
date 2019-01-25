@@ -22,14 +22,7 @@ type ConfigServiceLocalConfiguration struct {
 
 func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
 	return ConfigServiceLocalConfiguration{
-		Database: database.DBConfiguration{
-			Address:      "isp-pg",
-			Port:         "5432",
-			Schema:       "config-service",
-			Database:     "isp-test",
-			Username:     "isp-test",
-			CreateSchema: true,
-		},
+		Database: DefaultDbConfiguration(),
 		GrpcOuterAddress: structure.AddressConfiguration{
 			IP:   DefaultConfigServiceHost,
 			Port: "9002",
@@ -45,5 +38,16 @@ func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
 			IP:   "0.0.0.0",
 			Port: "9002",
 		}},
+	}
+}
+
+func DefaultDbConfiguration() database.DBConfiguration {
+	return database.DBConfiguration{
+		Address:      "isp-pg",
+		Port:         "5432",
+		Schema:       "config-service",
+		Database:     "isp-test",
+		Username:     "isp-test",
+		CreateSchema: true,
 	}
 }
