@@ -10,13 +10,6 @@ const (
 	DefaultConfigServicePort = "9001"
 )
 
-var (
-	DefaultConfigServiceAddress = structure.AddressConfiguration{
-		IP:   DefaultConfigServiceHost,
-		Port: DefaultConfigServicePort,
-	}
-)
-
 type ConfigServiceLocalConfiguration struct {
 	Database         database.DBConfiguration
 	GrpcOuterAddress structure.AddressConfiguration
@@ -58,5 +51,12 @@ func DefaultDbConfiguration() database.DBConfiguration {
 		Username:     "isp-test",
 		Password:     "123321",
 		CreateSchema: true,
+	}
+}
+
+func DefaultConfigServiceAddress() structure.AddressConfiguration {
+	return structure.AddressConfiguration{
+		IP:   DefaultConfigServiceHost,
+		Port: DefaultConfigServicePort,
 	}
 }
