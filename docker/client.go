@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	"github.com/integration-system/isp-lib/config"
 	"github.com/pkg/errors"
@@ -35,7 +34,7 @@ func (c *ispDockerClient) RunAppContainer(image string, localConfig interface{},
 }
 
 func (c *ispDockerClient) CreateNetwork(name string) (*NetworkContext, error) {
-	ctx := &NetworkContext{}
+	ctx := &NetworkContext{client: c}
 
 	net, err := c.c.NetworkCreate(context.Background(), name, types.NetworkCreate{})
 	if err != nil {
@@ -73,7 +72,7 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 	resp, err := c.c.ContainerCreate(context.Background(), &container.Config{
 		Image: image,
 		Env:   envVars,
-	}, nil, &network.NetworkingConfig{}, ops.name)
+	}, nil, nil, ops.name)
 	if err != nil {
 		return ctx, errors.Wrap(err, "create container")
 	}

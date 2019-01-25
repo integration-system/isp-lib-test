@@ -12,7 +12,7 @@ func configToEnvVariables(localConfig interface{}, prefix string) []string {
 	for k, v := range m {
 		value := fmt.Sprintf("%v", v)
 		if value != "" {
-			vars = append(vars, fmt.Sprintf("%s_%s=%s", prefix, strings.ToUpper(k), value))
+			vars = append(vars, fmt.Sprintf("%s_%s=%s", strings.ToUpper(prefix), strings.ToUpper(k), value))
 		}
 	}
 	return vars
