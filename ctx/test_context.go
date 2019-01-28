@@ -61,6 +61,10 @@ type BaseTestConfiguration struct {
 		Username string
 		Password string
 	}
+	Images struct {
+		ConfigService string
+		Module        string
+	}
 }
 
 func (tc *BaseTestConfiguration) GetBaseConfiguration() BaseTestConfiguration {
