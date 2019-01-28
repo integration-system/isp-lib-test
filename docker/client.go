@@ -9,6 +9,7 @@ import (
 	"github.com/integration-system/isp-lib/config"
 	"github.com/pkg/errors"
 	"io"
+	"os"
 )
 
 type ispDockerClient struct {
@@ -71,7 +72,7 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 			return ctx, errors.Wrap(err, "pull image")
 		}
 		ctx.imageId = image
-		_, _ = io.Copy(ops.logger, reader)
+		_, _ = io.Copy(os.Stdout, reader)
 	}
 
 	envVars = append(envVars, ops.env...)
