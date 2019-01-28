@@ -71,9 +71,7 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 			return ctx, errors.Wrap(err, "pull image")
 		}
 		ctx.imageId = image
-		if ops.logger != nil {
-			_, _ = io.Copy(ops.logger, reader)
-		}
+		_, _ = io.Copy(ops.logger, reader)
 	}
 
 	envVars = append(envVars, ops.env...)
