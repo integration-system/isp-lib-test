@@ -28,8 +28,14 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 	return c.runContainer(image, vars, opts...)
 }
 
-func (c *ispDockerClient) RunAppContainer(image string, localConfig interface{}, opts ...Option) (*ContainerContext, error) {
-	vars := configToEnvVariables(localConfig, config.EnvPrefix)
+func (c *ispDockerClient) RunAppContainer(image string, localConfig, remoteConfig interface{}, opts ...Option) (*ContainerContext, error) {
+	vars := make([]string, 0)
+	if localConfig != nil {
+		vars = append(vars, configToEnvVariables(localConfig, config.LocalConfigEnvPrefix)...)
+	}
+	if remoteConfig != nil {
+		vars = append(vars, configToEnvVariables(remoteConfig, config.RemoteConfigEnvPrefix)...)
+	}
 	return c.runContainer(image, vars, opts...)
 }
 

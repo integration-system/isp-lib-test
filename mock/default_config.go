@@ -1,13 +1,14 @@
 package mock
 
 import (
+	"fmt"
 	"github.com/integration-system/isp-lib/database"
 	"github.com/integration-system/isp-lib/structure"
 )
 
 const (
-	DefaultConfigServiceHost = "isp-config-service"
-	DefaultConfigServicePort = "9001"
+	defaultConfigServiceHost = "isp-config-service"
+	defaultConfigServicePort = "9001"
 
 	DefaultIspInstanceId = "bf482806-0c3d-4e0d-b9d4-12c037b12d70"
 )
@@ -22,13 +23,13 @@ type ConfigServiceLocalConfiguration struct {
 	}
 }
 
-func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
-	dbCfg := DefaultDbConfiguration()
+func ConfigServiceConfiguration(hostSuffix string) ConfigServiceLocalConfiguration {
+	dbCfg := DbConfiguration(hostSuffix)
 	dbCfg.Schema = "config_service"
 	return ConfigServiceLocalConfiguration{
 		Database: dbCfg,
 		GrpcOuterAddress: structure.AddressConfiguration{
-			IP:   DefaultConfigServiceHost,
+			IP:   fmt.Sprintf("%s-%s", defaultConfigServiceHost, hostSuffix),
 			Port: "9002",
 		},
 		ModuleName: "config",
@@ -37,7 +38,7 @@ func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
 			Grpc structure.AddressConfiguration
 		}{Rest: structure.AddressConfiguration{
 			IP:   "0.0.0.0",
-			Port: DefaultConfigServicePort,
+			Port: defaultConfigServicePort,
 		}, Grpc: structure.AddressConfiguration{
 			IP:   "0.0.0.0",
 			Port: "9002",
@@ -45,9 +46,9 @@ func DefaultConfigServiceConfiguration() ConfigServiceLocalConfiguration {
 	}
 }
 
-func DefaultDbConfiguration() database.DBConfiguration {
+func DbConfiguration(hostSuffix string) database.DBConfiguration {
 	return database.DBConfiguration{
-		Address:      "isp-pgsql",
+		Address:      fmt.Sprintf("%s-%s", "isp-pgsql", hostSuffix),
 		Port:         "5432",
 		Database:     "isp-test",
 		Username:     "isp-test",
@@ -56,9 +57,13 @@ func DefaultDbConfiguration() database.DBConfiguration {
 	}
 }
 
-func DefaultConfigServiceAddress() structure.AddressConfiguration {
+func ConfigServiceAddress(hostSuffix string) structure.AddressConfiguration {
 	return structure.AddressConfiguration{
-		IP:   DefaultConfigServiceHost,
-		Port: DefaultConfigServicePort,
+		IP:   fmt.Sprintf("%s-%s", defaultConfigServiceHost, hostSuffix),
+		Port: defaultConfigServicePort,
 	}
+}
+
+func DockerNetwork(hostSuffix string) string {
+	return fmt.Sprintf("%s-%s", "isp-test-network", hostSuffix)
 }
