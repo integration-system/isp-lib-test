@@ -24,10 +24,12 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 		fmt.Sprintf("POSTGRES_USER=%s", dbAndUserName),
 		fmt.Sprintf("POSTGRES_PASSWORD=%s", password),
 	}
-	opts = append(opts, WithPortMapping(map[string]string{"5432": "5432"}))
 	return c.runContainer(image, vars, opts...)
 }
 
+// create and run container from specified image
+// not pull image by default, use option PullImage to pull first
+// localConfig and remoteConfig can be map or struct
 func (c *ispDockerClient) RunAppContainer(image string, localConfig, remoteConfig interface{}, opts ...Option) (*ContainerContext, error) {
 	vars := make([]string, 0)
 	if localConfig != nil {
