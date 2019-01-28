@@ -29,7 +29,7 @@ const (
 
 	DefaultIspInstanceId = "bf482806-0c3d-4e0d-b9d4-12c037b12d70"
 
-	TestCofigEnvPrefix = "ISP_TEST"
+	TestConfigEnvPrefix = "ISP_TEST"
 )
 
 type ConfigServiceLocalConfiguration struct {
@@ -55,8 +55,9 @@ type Testable interface {
 }
 
 type BaseTestConfiguration struct {
-	ModuleName string
-	Registry   struct {
+	ModuleName   string
+	InstanceUuid string
+	Registry     struct {
 		Host     string
 		Username string
 		Password string
@@ -136,7 +137,7 @@ func (ctx *TestContext) GetModuleLocalConfig(port int) DefaultLocalConfiguration
 		GrpcOuterAddress:     structure.AddressConfiguration{Port: strPort, IP: ctx.GetContainer(ctx.baseCfg.ModuleName)},
 		GrpcInnerAddress:     structure.AddressConfiguration{Port: strPort, IP: bindAddress},
 		ModuleName:           ctx.baseCfg.ModuleName,
-		InstanceUuid:         DefaultIspInstanceId,
+		InstanceUuid:         ctx.baseCfg.InstanceUuid,
 	}
 }
 
@@ -151,7 +152,7 @@ func (ctx *TestContext) GetContainer(baseContainerName string) string {
 func LoadContext(configPtr Testable) (*TestContext, error) {
 	viper := viper.New()
 
-	viper.SetEnvPrefix(TestCofigEnvPrefix)
+	viper.SetEnvPrefix(TestConfigEnvPrefix)
 	viper.AutomaticEnv()
 
 	envConfigName := "config_test"
