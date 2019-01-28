@@ -14,7 +14,7 @@ type options struct {
 
 	pullImage     bool
 	registryCreds string
-	portMapping   nat.PortSet
+	portMapping   nat.PortMap
 
 	env []string
 
@@ -51,9 +51,9 @@ func WithPortMapping(mapping map[string]string) Option {
 	for pub, priv := range mapping {
 		arr = append(arr, fmt.Sprintf("%s:%s", pub, priv))
 	}
-	set, _, _ := nat.ParsePortSpecs(arr)
+	_, m, _ := nat.ParsePortSpecs(arr)
 	return func(opts *options) {
-		opts.portMapping = set
+		opts.portMapping = m
 	}
 }
 
