@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"testing"
 )
 
 const (
@@ -54,6 +55,18 @@ type DefaultLocalConfiguration struct {
 	GrpcInnerAddress     structure.AddressConfiguration
 	ModuleName           string
 	InstanceUuid         string
+}
+
+type Runner func(ctx *TestContext, runTest func() int) int
+
+type TestRunner struct {
+	m      *testing.M
+	ctx    *TestContext
+	runner Runner
+}
+
+func (r *TestRunner) Run() {
+	os.Exit(r.runner(r.ctx, r.m.Run))
 }
 
 type Testable interface {
@@ -166,7 +179,19 @@ func (ctx *TestContext) GetContainer(baseContainerName string) string {
 	return fmt.Sprintf("isp-test-%s-%s", baseContainerName, ctx.baseCfg.ModuleName)
 }
 
-func LoadContext(configPtr Testable) (*TestContext, error) {
+func LoadContext(m *testing.M, configPtr Testable, runner Runner) (*TestRunner, error) {
+	ctx, err := loadCtx(configPtr)
+	if err != nil {
+		return nil, err
+	}
+	return &TestRunner{
+		m:      m,
+		ctx:    ctx,
+		runner: runner,
+	}, nil
+}
+
+func loadCtx(configPtr Testable) (*TestContext, error) {
 	viper := viper.New()
 
 	viper.SetEnvPrefix(TestConfigEnvPrefix)
