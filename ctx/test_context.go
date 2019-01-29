@@ -1,6 +1,7 @@
 package ctx
 
 import (
+	"flag"
 	"fmt"
 	"github.com/integration-system/isp-lib/database"
 	"github.com/integration-system/isp-lib/rabbit"
@@ -58,13 +59,18 @@ type DefaultLocalConfiguration struct {
 
 type Runner func(ctx *TestContext, runTest func() int) int
 
-type TestRunner struct {
+type IntegrationTestRunner struct {
 	m      *testing.M
 	ctx    *TestContext
 	runner Runner
 }
 
-func (r *TestRunner) Run() {
+func (r *IntegrationTestRunner) PrepareAndRun() {
+	flag.Parse()
+	if testing.Short() {
+		return
+	}
+
 	os.Exit(r.runner(r.ctx, r.m.Run))
 }
 
@@ -177,12 +183,12 @@ func (ctx *TestContext) GetContainer(baseContainerName string) string {
 	return fmt.Sprintf("isp-test-%s-%s", baseContainerName, ctx.baseCfg.ModuleName)
 }
 
-func LoadContext(m *testing.M, configPtr Testable, runner Runner) (*TestRunner, error) {
+func NewIntegrationTest(m *testing.M, configPtr Testable, runner Runner) (*IntegrationTestRunner, error) {
 	ctx, err := loadCtx(configPtr)
 	if err != nil {
 		return nil, err
 	}
-	return &TestRunner{
+	return &IntegrationTestRunner{
 		m:      m,
 		ctx:    ctx,
 		runner: runner,
