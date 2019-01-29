@@ -28,6 +28,10 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 	return c.runContainer(image, vars, opts...)
 }
 
+func (c *ispDockerClient) RunRabbitContainer(image string, opts ...Option) (*ContainerContext, error) {
+	return c.runContainer(image, nil, opts...)
+}
+
 // create and run container from specified image
 // not pull image by default, use option PullImage to pull first
 // localConfig and remoteConfig can be map or struct
@@ -75,7 +79,11 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 		_, _ = io.Copy(os.Stdout, reader)
 	}
 
-	envVars = append(envVars, ops.env...)
+	if envVars != nil {
+		envVars = append(envVars, ops.env...)
+	} else {
+		envVars = ops.env
+	}
 	var hostCfg *container.HostConfig = nil
 	if len(ops.portBinding) > 0 {
 		hostCfg = &container.HostConfig{PortBindings: ops.portBinding}

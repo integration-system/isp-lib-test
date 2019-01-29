@@ -3,6 +3,7 @@ package ctx
 import (
 	"fmt"
 	"github.com/integration-system/isp-lib/database"
+	"github.com/integration-system/isp-lib/rabbit"
 	"github.com/integration-system/isp-lib/structure"
 	"github.com/integration-system/isp-lib/utils"
 	"github.com/spf13/viper"
@@ -24,6 +25,11 @@ const (
 	pgSqlPort     = "5432"
 	PgSqlDbName   = "isp-test"
 	PgSqlPassword = "123321"
+
+	rabbitBaseHost = "isp-rabbit"
+	rabbitPort     = "5672"
+	rabbitUsername = "guest"
+	rabbitPassword = "guest"
 
 	dockerNetwork = "isp-test-network"
 
@@ -116,6 +122,17 @@ func (ctx *TestContext) GetDBConfiguration() database.DBConfiguration {
 		Username:     PgSqlDbName,
 		Password:     PgSqlPassword,
 		CreateSchema: true,
+	}
+}
+
+func (ctx *TestContext) GetRabbitConfiguration() rabbit.RabbitConfig {
+	return rabbit.RabbitConfig{
+		Address: structure.AddressConfiguration{
+			IP:   fmt.Sprintf("%s-%s", rabbitBaseHost, ctx.baseCfg.ModuleName),
+			Port: rabbitPort,
+		},
+		User:     rabbitUsername,
+		Password: rabbitPassword,
 	}
 }
 

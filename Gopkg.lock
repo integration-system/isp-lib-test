@@ -156,17 +156,18 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:45ad8592838634b8e8ac88b53d0a37e676e913d34661161b4e2e610ac373433e"
+  digest = "1:a6622282199a1ba33c6b5935fdf564fce6031fba255f856bf7a960739db25471"
   name = "github.com/integration-system/isp-lib"
   packages = [
     "config",
     "database",
     "logger",
+    "rabbit",
     "structure",
     "utils",
   ]
   pruneopts = "UT"
-  revision = "8c2f9ca5385d13b666ab280d9004f51926566d3e"
+  revision = "25a551818ecfe98c07ded69cba468f2a9fc02cce"
 
 [[projects]]
   branch = "master"
@@ -354,6 +355,14 @@
   version = "v1.3.1"
 
 [[projects]]
+  branch = "master"
+  digest = "1:525ac3364813b4688df380594e562133e07830dfce0722effda64b37634c13d0"
+  name = "github.com/streadway/amqp"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a314942b2fd9dde7a3f70ba3f1062848ce6eb392"
+
+[[projects]]
   digest = "1:39a425f98fb19427061a693fe6bf0683c9bddec4b25b17067e34fdb465e39cb9"
   name = "github.com/x-cray/logrus-prefixed-formatter"
   packages = ["."]
@@ -363,14 +372,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:9ff2b9f8d4e47013a213b9ea0d850ed787c51f5eab2038842d82397ad85a19c1"
+  digest = "1:82ecbc0909723597abc7d23d7e9030eb90f9c28dfaef0b55dd5120445394123f"
   name = "golang.org/x/crypto"
   packages = [
     "pbkdf2",
     "ssh/terminal",
   ]
   pruneopts = "UT"
-  revision = "057139ce5d2bdbe6fe73c53679e24e9cf007f637"
+  revision = "c7b33c32a30bae9ba07d37eb4d86f1f8b0f644fb"
 
 [[projects]]
   branch = "master"
@@ -387,14 +396,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:bb644db32f5bc1e327a0f748ec871edc4dc46f19b4fbbc15bfd95b1460646537"
+  digest = "1:f5987dbdcc6c3fb59ea5d4e4344a009308608b22c0ba24ef74c4f1e2a6032904"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "b90733256f2e882e81d52f9126de08df5615afd9"
+  revision = "302c3dd5f1cc82baae8e44d9c3178e89b6e2b345"
 
 [[projects]]
   digest = "1:8029e9743749d4be5bc9f7d42ea1659471767860f0cdc34d37c3111bd308a295"
@@ -420,7 +429,7 @@
     "googleapis/rpc/status",
   ]
   pruneopts = "UT"
-  revision = "aa24cbd621fe1e2867110ea8c673d99a1a92efdc"
+  revision = "8ac453e89fca495c0d17f98932642f392e2a11f3"
 
 [[projects]]
   digest = "1:8cfdd3367cd9e60a9ea5f33ec3a3555a88a819909b7477495b2e8037dad42be4"
@@ -470,6 +479,7 @@
     "github.com/doublerebel/bellows",
     "github.com/integration-system/isp-lib/config",
     "github.com/integration-system/isp-lib/database",
+    "github.com/integration-system/isp-lib/rabbit",
     "github.com/integration-system/isp-lib/structure",
     "github.com/integration-system/isp-lib/utils",
     "github.com/pkg/errors",
