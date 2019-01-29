@@ -39,6 +39,10 @@ const (
 	TestConfigEnvPrefix = "ISP_TEST"
 )
 
+var (
+	DockerHostMachine = os.Getenv("DOCKER_HOST")
+)
+
 type ConfigServiceLocalConfiguration struct {
 	Database         database.DBConfiguration
 	GrpcOuterAddress structure.AddressConfiguration
