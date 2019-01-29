@@ -40,7 +40,7 @@ const (
 )
 
 var (
-	DockerHostMachine = os.Getenv("DOCKER_HOST")
+	DockerHostMachine = os.Getenv("DOCKER_HOST_MACHINE") //use it if test runs in container
 )
 
 type ConfigServiceLocalConfiguration struct {
