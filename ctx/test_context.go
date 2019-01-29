@@ -77,7 +77,8 @@ func (r *IntegrationTestRunner) PrepareAndRun() {
 		return
 	}
 
-	os.Exit(r.runner(r.ctx, r.m.Run))
+	code := r.runner(r.ctx, r.m.Run)
+	os.Exit(code)
 }
 
 type Testable interface {
