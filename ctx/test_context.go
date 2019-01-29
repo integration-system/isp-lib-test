@@ -57,6 +57,7 @@ type DefaultLocalConfiguration struct {
 	InstanceUuid         string
 }
 
+// runner must prepare environment for test, defer all resources closing and finally call runTest
 type Runner func(ctx *TestContext, runTest func() int) int
 
 type IntegrationTestRunner struct {
@@ -65,6 +66,7 @@ type IntegrationTestRunner struct {
 	runner Runner
 }
 
+// run test only if test.short is false or not specified
 func (r *IntegrationTestRunner) PrepareAndRun() {
 	flag.Parse()
 	if testing.Short() {
@@ -96,6 +98,7 @@ func (tc *BaseTestConfiguration) GetBaseConfiguration() BaseTestConfiguration {
 	return *tc
 }
 
+// produce isolated configurations for tests
 type TestContext struct {
 	cfg     Testable
 	baseCfg BaseTestConfiguration
@@ -109,6 +112,7 @@ func (ctx *TestContext) BaseConfiguration() BaseTestConfiguration {
 	return ctx.baseCfg
 }
 
+// produce local configuration for config-service instance
 func (ctx *TestContext) GetConfigServiceConfiguration() ConfigServiceLocalConfiguration {
 	dbCfg := ctx.GetDBConfiguration()
 	dbCfg.Schema = configServiceSchema
@@ -183,6 +187,7 @@ func (ctx *TestContext) GetContainer(baseContainerName string) string {
 	return fmt.Sprintf("isp-test-%s-%s", baseContainerName, ctx.baseCfg.ModuleName)
 }
 
+// crate integration test context, load test configuration from file
 func NewIntegrationTest(m *testing.M, configPtr Testable, runner Runner) (*IntegrationTestRunner, error) {
 	ctx, err := loadCtx(configPtr)
 	if err != nil {

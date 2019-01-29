@@ -26,13 +26,14 @@ type options struct {
 
 type Option func(opts *options)
 
-// redirect docker container pulling and running logs
+// redirect docker container runtime logs
 func WithLogger(logger io.Writer) Option {
 	return func(opts *options) {
 		opts.logger = logger
 	}
 }
 
+// if set image pulls first, registryLogin and registryPassword are optional
 func PullImage(registryLogin string, registryPassword string) Option {
 	return func(opts *options) {
 		opts.pullImage = true
@@ -47,6 +48,7 @@ func PullImage(registryLogin string, registryPassword string) Option {
 	}
 }
 
+// bind ports host_machine_port -> container_exposed_port
 func WithPortBindings(mapping map[string]string) Option {
 	arr := make([]string, 0, len(mapping))
 	for pub, priv := range mapping {
@@ -59,6 +61,7 @@ func WithPortBindings(mapping map[string]string) Option {
 	}
 }
 
+// set environments variables
 func WithEnv(vars map[string]string) Option {
 	arr := make([]string, 0, len(vars))
 	for k, v := range vars {
@@ -69,12 +72,14 @@ func WithEnv(vars map[string]string) Option {
 	}
 }
 
+// set container name and hostname in docker network by default
 func WithName(containerName string) Option {
 	return func(opts *options) {
 		opts.name = containerName
 	}
 }
 
+// if set, container joins to specified network
 func WithNetwork(ctx *NetworkContext) Option {
 	return func(opts *options) {
 		opts.network = ctx.id

@@ -20,6 +20,8 @@ func (c *ispDockerClient) Close() error {
 	return c.c.Close()
 }
 
+// create and run postgreSQL container
+// expect image from https://hub.docker.com/_/postgres
 func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, password string, opts ...Option) (*ContainerContext, error) {
 	vars := []string{
 		fmt.Sprintf("POSTGRES_USER=%s", dbAndUserName),
@@ -28,12 +30,12 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 	return c.runContainer(image, vars, opts...)
 }
 
+//create and run rabbitMQ container
 func (c *ispDockerClient) RunRabbitContainer(image string, opts ...Option) (*ContainerContext, error) {
 	return c.runContainer(image, nil, opts...)
 }
 
-// create and run container from specified image
-// not pull image by default, use option PullImage to pull first
+// create and run isp application container, override local and remote configuration through environment variables
 // localConfig and remoteConfig can be map or struct
 func (c *ispDockerClient) RunAppContainer(image string, localConfig, remoteConfig interface{}, opts ...Option) (*ContainerContext, error) {
 	vars := make([]string, 0)
@@ -46,6 +48,8 @@ func (c *ispDockerClient) RunAppContainer(image string, localConfig, remoteConfi
 	return c.runContainer(image, vars, opts...)
 }
 
+// create docker network with specified name
+// NetworkContext.Close remove network
 func (c *ispDockerClient) CreateNetwork(name string) (*NetworkContext, error) {
 	ctx := &NetworkContext{client: c}
 
@@ -58,6 +62,9 @@ func (c *ispDockerClient) CreateNetwork(name string) (*NetworkContext, error) {
 	return ctx, nil
 }
 
+// create and run container from specified image
+// dont pull image by default, use option PullImage to pull first
+// never return nil ContainerContext
 func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...Option) (*ContainerContext, error) {
 	ops := &options{}
 	for _, v := range opts {
