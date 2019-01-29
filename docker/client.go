@@ -30,8 +30,8 @@ func (c *ispDockerClient) RunPGContainer(image string, dbAndUserName string, pas
 	return c.runContainer(image, vars, opts...)
 }
 
-//create and run rabbitMQ container
-func (c *ispDockerClient) RunRabbitContainer(image string, opts ...Option) (*ContainerContext, error) {
+//create and run container from specified image
+func (c *ispDockerClient) RunContainer(image string, opts ...Option) (*ContainerContext, error) {
 	return c.runContainer(image, nil, opts...)
 }
 
