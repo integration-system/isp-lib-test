@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"path"
-	"strconv"
 	"testing"
 )
 
@@ -160,12 +159,11 @@ func (ctx *TestContext) GetDockerNetwork() string {
 	return fmt.Sprintf("%s-%s", dockerNetwork, ctx.baseCfg.ModuleName)
 }
 
-func (ctx *TestContext) GetModuleLocalConfig(port int) DefaultLocalConfiguration {
-	strPort := strconv.Itoa(port)
+func (ctx *TestContext) GetModuleLocalConfig(port string) DefaultLocalConfiguration {
 	return DefaultLocalConfiguration{
 		ConfigServiceAddress: ctx.GetConfigServiceAddress(),
-		GrpcOuterAddress:     structure.AddressConfiguration{Port: strPort, IP: ctx.GetContainer(ctx.baseCfg.ModuleName)},
-		GrpcInnerAddress:     structure.AddressConfiguration{Port: strPort, IP: bindAddress},
+		GrpcOuterAddress:     structure.AddressConfiguration{Port: port, IP: ctx.GetContainer(ctx.baseCfg.ModuleName)},
+		GrpcInnerAddress:     structure.AddressConfiguration{Port: port, IP: bindAddress},
 		ModuleName:           ctx.baseCfg.ModuleName,
 		InstanceUuid:         ctx.baseCfg.InstanceUuid,
 	}
