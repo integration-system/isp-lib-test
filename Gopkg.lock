@@ -143,6 +143,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:471f4533f0eef4b4ed8589979dbcc3ddf9adcae4deae155f8b2ba519304d98ea"
+  name = "github.com/integration-system/bellows"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4c8f91b7fb44f44098117e503c54768dc14eddfe"
+
+[[projects]]
+  branch = "master"
   digest = "1:1b1d9534e35d61e861a7356f7f2d766e57e2777dbf79be60e1ac56bbd60adf51"
   name = "github.com/integration-system/go-cmp"
   packages = [
@@ -476,7 +484,7 @@
     "github.com/docker/docker/api/types/container",
     "github.com/docker/docker/client",
     "github.com/docker/go-connections/nat",
-    "github.com/doublerebel/bellows",
+    "github.com/integration-system/bellows",
     "github.com/integration-system/isp-lib/config",
     "github.com/integration-system/isp-lib/database",
     "github.com/integration-system/isp-lib/rabbit",

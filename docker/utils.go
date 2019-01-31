@@ -2,7 +2,7 @@ package docker
 
 import (
 	"fmt"
-	"github.com/doublerebel/bellows"
+	"github.com/integration-system/bellows"
 	"reflect"
 	"strconv"
 	"strings"
