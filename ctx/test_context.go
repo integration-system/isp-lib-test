@@ -179,7 +179,7 @@ func (ctx *TestContext) GetModuleLocalConfig(port, moduleName string) DefaultLoc
 		ConfigServiceAddress: ctx.GetConfigServiceAddress(),
 		GrpcOuterAddress:     structure.AddressConfiguration{Port: port, IP: ctx.GetContainer(moduleName)},
 		GrpcInnerAddress:     structure.AddressConfiguration{Port: port, IP: bindAddress},
-		ModuleName:           ctx.baseCfg.ModuleName,
+		ModuleName:           moduleName,
 		InstanceUuid:         ctx.baseCfg.InstanceUuid,
 	}
 }
