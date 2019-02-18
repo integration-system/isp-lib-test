@@ -14,15 +14,9 @@ type ContainerContext struct {
 
 // force delete container and image
 func (ctx *ContainerContext) Close() error {
-	if err := ctx.ForceRemoveContainer(); err != nil {
-		return err
-	}
+	_ = ctx.ForceRemoveContainer()
 
-	if err := ctx.ForceDeleteImage(); err != nil {
-		return err
-	}
-
-	return nil
+	_ = ctx.ForceDeleteImage()
 }
 
 func (ctx *ContainerContext) ForceRemoveContainer() error {
@@ -35,6 +29,7 @@ func (ctx *ContainerContext) ForceRemoveContainer() error {
 		if err != nil {
 			return errors.Wrap(err, "container remove")
 		}
+		ctx.containerId = ""
 	}
 
 	return nil
@@ -50,6 +45,7 @@ func (ctx *ContainerContext) ForceDeleteImage() error {
 		if err != nil {
 			return errors.Wrap(err, "image remove")
 		}
+		ctx.imageId = ""
 	}
 
 	return nil
