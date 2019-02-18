@@ -174,10 +174,10 @@ func (ctx *TestContext) GetDockerNetwork() string {
 	return fmt.Sprintf("%s-%s", dockerNetwork, ctx.baseCfg.ModuleName)
 }
 
-func (ctx *TestContext) GetModuleLocalConfig(port string) DefaultLocalConfiguration {
+func (ctx *TestContext) GetModuleLocalConfig(port, moduleName string) DefaultLocalConfiguration {
 	return DefaultLocalConfiguration{
 		ConfigServiceAddress: ctx.GetConfigServiceAddress(),
-		GrpcOuterAddress:     structure.AddressConfiguration{Port: port, IP: ctx.GetContainer(ctx.baseCfg.ModuleName)},
+		GrpcOuterAddress:     structure.AddressConfiguration{Port: port, IP: ctx.GetContainer(moduleName)},
 		GrpcInnerAddress:     structure.AddressConfiguration{Port: port, IP: bindAddress},
 		ModuleName:           ctx.baseCfg.ModuleName,
 		InstanceUuid:         ctx.baseCfg.InstanceUuid,
