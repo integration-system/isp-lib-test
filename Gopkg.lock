@@ -74,14 +74,6 @@
   version = "v0.3.3"
 
 [[projects]]
-  branch = "master"
-  digest = "1:b0ddbad880d26589b9de3934e4d149ef8e0db27b4aab873304dd17350818f29d"
-  name = "github.com/doublerebel/bellows"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "f177d92a03d33226a1e1777e4b3a5d824bd2598f"
-
-[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -143,15 +135,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:471f4533f0eef4b4ed8589979dbcc3ddf9adcae4deae155f8b2ba519304d98ea"
+  digest = "1:5abc0c2cd2f993e8ead7813508adb4be0e74c57fd559b65f792990454da1faba"
   name = "github.com/integration-system/bellows"
   packages = ["."]
   pruneopts = "UT"
-  revision = "4c8f91b7fb44f44098117e503c54768dc14eddfe"
+  revision = "a752679821f2edc18109881821d2fec75641125b"
 
 [[projects]]
   branch = "master"
-  digest = "1:1b1d9534e35d61e861a7356f7f2d766e57e2777dbf79be60e1ac56bbd60adf51"
+  digest = "1:c4f3970d1f30f5e9bc1751b62b7ea6127256e59fd63a3d36e166fe1121250c57"
   name = "github.com/integration-system/go-cmp"
   packages = [
     "cmp",
@@ -160,11 +152,11 @@
     "cmp/internal/value",
   ]
   pruneopts = "UT"
-  revision = "ed1c8d9bf7906aec13cf28080fdf069d7687471a"
+  revision = "ac5582987a2f25e8743e0ebb7259312adda05c23"
 
 [[projects]]
   branch = "master"
-  digest = "1:a6622282199a1ba33c6b5935fdf564fce6031fba255f856bf7a960739db25471"
+  digest = "1:50f793bd17e3515b079c3cb1fb893c00d798d235ebaeabdc681cbb00ede66d43"
   name = "github.com/integration-system/isp-lib"
   packages = [
     "config",
@@ -175,7 +167,7 @@
     "utils",
   ]
   pruneopts = "UT"
-  revision = "25a551818ecfe98c07ded69cba468f2a9fc02cce"
+  revision = "74087566734bf924f0a2d6c7b2ca0d3bd2e21b6d"
 
 [[projects]]
   branch = "master"
@@ -224,12 +216,12 @@
   version = "v1.8.0"
 
 [[projects]]
-  digest = "1:c658e84ad3916da105a761660dcaeb01e63416c8ec7bc62256a9b411a05fcd67"
+  digest = "1:0f96ec4151a24d7bfd4298fc13cc320a000e31b4e5431cf88e3ffc961db846fd"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
   pruneopts = "UT"
-  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
-  version = "v0.0.9"
+  revision = "efa589957cd060542a26d2dd7832fd6a6c6c3ade"
+  version = "v0.1.0"
 
 [[projects]]
   digest = "1:0981502f9816113c9c8c4ac301583841855c8cf4da8c72f696b3ebedf6d0e4e5"
@@ -320,15 +312,15 @@
   version = "v1.3.0"
 
 [[projects]]
-  digest = "1:d707dbc1330c0ed177d4642d6ae102d5e2c847ebd0eb84562d0dc4f024531cfc"
+  digest = "1:3e39bafd6c2f4bf3c76c3bfd16a2e09e016510ad5db90dc02b88e2f565d6d595"
   name = "github.com/spf13/afero"
   packages = [
     ".",
     "mem",
   ]
   pruneopts = "UT"
-  revision = "a5d6946387efe7d64d09dcba68cdd523dc1273a3"
-  version = "v1.2.0"
+  revision = "f4711e4db9e9a1d3887343acb72b2bbfc2f686f5"
+  version = "v1.2.1"
 
 [[projects]]
   digest = "1:08d65904057412fc0270fc4812a1c90c594186819243160dc779a402d4b6d0bc"
@@ -364,11 +356,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:525ac3364813b4688df380594e562133e07830dfce0722effda64b37634c13d0"
+  digest = "1:dbd2b63224b02f9c7fd0631edaf6588dfb05fc20608f548fb603ef096fa87474"
   name = "github.com/streadway/amqp"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a314942b2fd9dde7a3f70ba3f1062848ce6eb392"
+  revision = "884228600bc96c993ab12fb81ba78bf0c280e88a"
 
 [[projects]]
   digest = "1:39a425f98fb19427061a693fe6bf0683c9bddec4b25b17067e34fdb465e39cb9"
@@ -387,7 +379,7 @@
     "ssh/terminal",
   ]
   pruneopts = "UT"
-  revision = "c7b33c32a30bae9ba07d37eb4d86f1f8b0f644fb"
+  revision = "74369b46fc6756741c016591724fd1cb8e26845f"
 
 [[projects]]
   branch = "master"
@@ -400,18 +392,18 @@
     "proxy",
   ]
   pruneopts = "UT"
-  revision = "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf"
+  revision = "3a22650c66bd7f4fb6d1e8072ffd7b75c8a27898"
 
 [[projects]]
   branch = "master"
-  digest = "1:f5987dbdcc6c3fb59ea5d4e4344a009308608b22c0ba24ef74c4f1e2a6032904"
+  digest = "1:0d703f14f9bbbe1070ff0ce86d749dcbc9d68fb0ae554252c09bd4bb37a072e7"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "302c3dd5f1cc82baae8e44d9c3178e89b6e2b345"
+  revision = "d0b11bdaac8adb652bff00e49bcacf992835621a"
 
 [[projects]]
   digest = "1:8029e9743749d4be5bc9f7d42ea1659471767860f0cdc34d37c3111bd308a295"
@@ -437,7 +429,7 @@
     "googleapis/rpc/status",
   ]
   pruneopts = "UT"
-  revision = "8ac453e89fca495c0d17f98932642f392e2a11f3"
+  revision = "bd968387e4aa590b3c6e4ba38ecac1ed314d43ad"
 
 [[projects]]
   digest = "1:8cfdd3367cd9e60a9ea5f33ec3a3555a88a819909b7477495b2e8037dad42be4"
