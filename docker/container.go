@@ -17,6 +17,8 @@ func (ctx *ContainerContext) Close() error {
 	_ = ctx.ForceRemoveContainer()
 
 	_ = ctx.ForceDeleteImage()
+
+	return nil
 }
 
 func (ctx *ContainerContext) ForceRemoveContainer() error {
