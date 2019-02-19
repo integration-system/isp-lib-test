@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/docker/docker/api/types"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 type ContainerContext struct {
@@ -14,11 +15,18 @@ type ContainerContext struct {
 
 // force delete container and image
 func (ctx *ContainerContext) Close() error {
-	_ = ctx.ForceRemoveContainer()
+	err := ctx.ForceRemoveContainer()
 
-	_ = ctx.ForceDeleteImage()
+	removeImageErr := ctx.ForceRemoveImage()
+	if removeImageErr != nil {
+		if err == nil {
+			err = removeImageErr
+		} else {
+			err = errors.New(strings.Join([]string{err.Error(), removeImageErr.Error()}, "; "))
+		}
+	}
 
-	return nil
+	return err
 }
 
 func (ctx *ContainerContext) ForceRemoveContainer() error {
@@ -37,7 +45,7 @@ func (ctx *ContainerContext) ForceRemoveContainer() error {
 	return nil
 }
 
-func (ctx *ContainerContext) ForceDeleteImage() error {
+func (ctx *ContainerContext) ForceRemoveImage() error {
 	if ctx.imageId != "" {
 		_, err := ctx.client.c.ImageRemove(
 			context.Background(),
