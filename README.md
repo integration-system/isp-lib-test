@@ -89,3 +89,6 @@ func setup(testCtx *ctx.TestContext, runTest func() int) int {
 
 //tests here
 ```
+
+## Notes
+By default integration tests skips if flag `-test.short == true` was set in command line
