@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func configToEnvVariables(config interface{}, prefix string) []string {
+func configToEnvVariables(config interface{}, prefix string, withTypes bool) []string {
 	m := bellows.Flatten(config)
 	vars := make([]string, 0, len(m))
 	for k, v := range m {
@@ -18,7 +18,13 @@ func configToEnvVariables(config interface{}, prefix string) []string {
 		}
 		value, t := toString(v)
 		if value != "" {
-			vars = append(vars, fmt.Sprintf("%s_%s=%s#{%s}", strings.ToUpper(prefix), strings.ToUpper(k), value, t))
+			env := ""
+			if withTypes {
+				env = fmt.Sprintf("%s_%s=%s#{%s}", strings.ToUpper(prefix), strings.ToUpper(k), value, t)
+			} else {
+				env = fmt.Sprintf("%s_%s=%s", strings.ToUpper(prefix), strings.ToUpper(k), value)
+			}
+			vars = append(vars, env)
 		}
 	}
 	return vars
