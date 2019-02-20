@@ -1,10 +1,10 @@
 package utils
 
 import (
+	"github.com/integration-system/isp-lib-test/ctx"
 	"github.com/integration-system/isp-lib/rabbit"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
-	"integration-system/isp-lib-test/ctx"
 	"time"
 )
 
