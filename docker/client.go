@@ -40,10 +40,10 @@ func (c *ispDockerClient) RunContainer(image string, opts ...Option) (*Container
 func (c *ispDockerClient) RunAppContainer(image string, localConfig, remoteConfig interface{}, opts ...Option) (*ContainerContext, error) {
 	vars := make([]string, 0)
 	if localConfig != nil {
-		vars = append(vars, configToEnvVariables(localConfig, config.LocalConfigEnvPrefix)...)
+		vars = append(vars, configToEnvVariables(localConfig, config.LocalConfigEnvPrefix, false)...)
 	}
 	if remoteConfig != nil {
-		vars = append(vars, configToEnvVariables(remoteConfig, config.RemoteConfigEnvPrefix)...)
+		vars = append(vars, configToEnvVariables(remoteConfig, config.RemoteConfigEnvPrefix, true)...)
 	}
 	return c.runContainer(image, vars, opts...)
 }
