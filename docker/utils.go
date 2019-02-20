@@ -3,6 +3,7 @@ package docker
 import (
 	"fmt"
 	"github.com/integration-system/bellows"
+	"github.com/integration-system/isp-lib/config"
 	"reflect"
 	"strconv"
 	"strings"
@@ -15,22 +16,22 @@ func configToEnvVariables(config interface{}, prefix string) []string {
 		if v == nil {
 			continue
 		}
-		value := toString(v)
+		value, t := toString(v)
 		if value != "" {
-			vars = append(vars, fmt.Sprintf("%s_%s=%s", strings.ToUpper(prefix), strings.ToUpper(k), value))
+			vars = append(vars, fmt.Sprintf("%s_%s=%s#{%s}", strings.ToUpper(prefix), strings.ToUpper(k), value, t))
 		}
 	}
 	return vars
 }
 
 // avoid zero values
-func toString(value interface{}) string {
+func toString(value interface{}) (string, config.PropertyType) {
 	rv := reflect.ValueOf(value)
 
 	switch rv.Kind() {
 	case reflect.String:
 		s := rv.String()
-		return s
+		return s, config.String
 	case
 		reflect.Int,
 		reflect.Int8,
@@ -38,35 +39,35 @@ func toString(value interface{}) string {
 		reflect.Int32,
 		reflect.Int64:
 		if rv.Int() == 0 {
-			return ""
+			return "", config.Int
 		}
 		s := strconv.Itoa(int(rv.Int()))
-		return s
+		return s, config.Int
 	case reflect.Float32:
 		if rv.Float() == 0 {
-			return ""
+			return "", config.Float32
 		}
 		s := strconv.FormatFloat(rv.Float(), 'f', -1, 32)
-		return s
+		return s, config.Float32
 	case reflect.Float64:
 		if rv.Float() == 0 {
-			return ""
+			return "", config.Float64
 		}
 		s := strconv.FormatFloat(rv.Float(), 'f', -1, 64)
-		return s
+		return s, config.Float64
 	case reflect.Bool:
 		if !rv.Bool() {
-			return ""
+			return "", config.Bool
 		}
 		s := strconv.FormatBool(rv.Bool())
-		return s
+		return s, config.Bool
 	case reflect.Interface, reflect.Ptr:
 		if rv.IsNil() {
-			return ""
+			return "", ""
 		}
 		el := rv.Elem().Interface()
 		return toString(el)
 	default:
-		return ""
+		return "", ""
 	}
 }
