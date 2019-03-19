@@ -2,13 +2,13 @@ package utils
 
 import (
 	"github.com/integration-system/isp-lib-test/ctx"
-	"github.com/integration-system/isp-lib/rabbit"
+	"github.com/integration-system/isp-lib/structure"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
 	"time"
 )
 
-func WaitRabbit(rabbitCfg rabbit.RabbitConfig, port string, timeout time.Duration) (*amqp.Connection, error) {
+func WaitRabbit(rabbitCfg structure.RabbitConfig, port string, timeout time.Duration) (*amqp.Connection, error) {
 	rabbitCfg.Address.IP = ctx.DockerHostMachine
 	rabbitCfg.Address.Port = port
 	uri := rabbitCfg.GetUri()
@@ -36,7 +36,7 @@ func DeclareQueue(conn *amqp.Connection, queueName string) error {
 	return err
 }
 
-func MakeRabbitChannel(config rabbit.RabbitConfig, port string) (*amqp.Channel, error) {
+func MakeRabbitChannel(config structure.RabbitConfig, port string) (*amqp.Channel, error) {
 	config.Address.IP = ctx.DockerHostMachine
 	config.Address.Port = port
 	conn, err := amqp.Dial(config.GetUri())

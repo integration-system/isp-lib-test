@@ -3,8 +3,6 @@ package ctx
 import (
 	"flag"
 	"fmt"
-	"github.com/integration-system/isp-lib/database"
-	"github.com/integration-system/isp-lib/rabbit"
 	"github.com/integration-system/isp-lib/structure"
 	"github.com/integration-system/isp-lib/utils"
 	"github.com/spf13/viper"
@@ -44,7 +42,7 @@ var (
 )
 
 type ConfigServiceLocalConfiguration struct {
-	Database         database.DBConfiguration
+	Database         structure.DBConfiguration
 	GrpcOuterAddress structure.AddressConfiguration
 	ModuleName       string
 	WS               struct {
@@ -141,8 +139,8 @@ func (ctx *TestContext) GetConfigServiceConfiguration() ConfigServiceLocalConfig
 	}
 }
 
-func (ctx *TestContext) GetDBConfiguration() database.DBConfiguration {
-	return database.DBConfiguration{
+func (ctx *TestContext) GetDBConfiguration() structure.DBConfiguration {
+	return structure.DBConfiguration{
 		Address:      fmt.Sprintf("%s-%s", pgSqlBaseHost, ctx.baseCfg.ModuleName),
 		Port:         pgSqlPort,
 		Database:     PgSqlDbName,
@@ -152,8 +150,8 @@ func (ctx *TestContext) GetDBConfiguration() database.DBConfiguration {
 	}
 }
 
-func (ctx *TestContext) GetRabbitConfiguration() rabbit.RabbitConfig {
-	return rabbit.RabbitConfig{
+func (ctx *TestContext) GetRabbitConfiguration() structure.RabbitConfig {
+	return structure.RabbitConfig{
 		Address: structure.AddressConfiguration{
 			IP:   fmt.Sprintf("%s-%s", rabbitBaseHost, ctx.baseCfg.ModuleName),
 			Port: rabbitPort,
