@@ -103,10 +103,12 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 		Image:        image,
 		Env:          envVars,
 		ExposedPorts: ops.portSet,
+		Volumes:      ops.volume,
 	}, hostCfg, nil, ops.name)
 	if err != nil {
 		return ctx, errors.Wrap(err, "create container")
 	}
+
 	ctx.containerId = resp.ID
 
 	if ops.network != "" {

@@ -22,6 +22,8 @@ type options struct {
 	name string
 
 	network string
+
+	volume map[string]struct{}
 }
 
 type Option func(opts *options)
@@ -83,5 +85,12 @@ func WithName(containerName string) Option {
 func WithNetwork(ctx *NetworkContext) Option {
 	return func(opts *options) {
 		opts.network = ctx.id
+	}
+}
+
+//
+func WithVolume(volume map[string]struct{}) Option {
+	return func(opts *options) {
+		opts.volume = volume
 	}
 }
