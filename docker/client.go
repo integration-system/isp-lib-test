@@ -99,11 +99,16 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 	if len(ops.portBinding) > 0 {
 		hostCfg = &container.HostConfig{PortBindings: ops.portBinding}
 	}
+	if len(ops.volume) > 0 {
+		if hostCfg == nil {
+			hostCfg = &container.HostConfig{}
+		}
+		hostCfg.Binds = ops.volume
+	}
 	resp, err := c.c.ContainerCreate(context.Background(), &container.Config{
 		Image:        image,
 		Env:          envVars,
 		ExposedPorts: ops.portSet,
-		Volumes:      ops.volume,
 	}, hostCfg, nil, ops.name)
 	if err != nil {
 		return ctx, errors.Wrap(err, "create container")

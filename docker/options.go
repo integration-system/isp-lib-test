@@ -23,7 +23,7 @@ type options struct {
 
 	network string
 
-	volume map[string]struct{}
+	volume []string
 }
 
 type Option func(opts *options)
@@ -89,8 +89,12 @@ func WithNetwork(ctx *NetworkContext) Option {
 }
 
 //
-func WithVolume(volume map[string]struct{}) Option {
+func WithVolumes(volume map[string]string) Option {
+	arr := make([]string, 0, len(volume))
+	for pub, priv := range volume {
+		arr = append(arr, fmt.Sprintf("%s:%s", pub, priv))
+	}
 	return func(opts *options) {
-		opts.volume = volume
+		opts.volume = arr
 	}
 }
