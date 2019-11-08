@@ -12,6 +12,7 @@ import (
 type options struct {
 	logger io.Writer
 
+	imageName     string
 	pullImage     bool
 	registryCreds string
 	portBinding   nat.PortMap
@@ -21,7 +22,8 @@ type options struct {
 
 	name string
 
-	network string
+	networkId   string
+	networkName string
 
 	volume []string
 }
@@ -84,7 +86,8 @@ func WithName(containerName string) Option {
 // if set, container joins to specified network
 func WithNetwork(ctx *NetworkContext) Option {
 	return func(opts *options) {
-		opts.network = ctx.id
+		opts.networkId = ctx.id
+		opts.networkName = ctx.name
 	}
 }
 
@@ -96,5 +99,11 @@ func WithVolumes(volume map[string]string) Option {
 	}
 	return func(opts *options) {
 		opts.volume = arr
+	}
+}
+
+func WithCustomImage(image string) Option {
+	return func(opts *options) {
+		opts.imageName = image
 	}
 }

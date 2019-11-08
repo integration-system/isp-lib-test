@@ -8,6 +8,7 @@ import (
 type NetworkContext struct {
 	client *ispDockerClient
 	id     string
+	name   string
 }
 
 func (ctx *NetworkContext) Close() error {

@@ -53,11 +53,14 @@ func (c *ispDockerClient) RunAppContainer(image string, localConfig, remoteConfi
 func (c *ispDockerClient) CreateNetwork(name string) (*NetworkContext, error) {
 	ctx := &NetworkContext{client: c}
 
-	net, err := c.c.NetworkCreate(context.Background(), name, types.NetworkCreate{})
+	net, err := c.c.NetworkCreate(context.Background(), name, types.NetworkCreate{
+		CheckDuplicate: true,
+	})
 	if err != nil {
 		return ctx, errors.Wrap(err, "network create")
 	}
 	ctx.id = net.ID
+	ctx.name = name
 
 	return ctx, nil
 }
@@ -69,6 +72,9 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 	ops := &options{}
 	for _, v := range opts {
 		v(ops)
+	}
+	if ops.imageName != "" {
+		image = ops.imageName
 	}
 
 	ctx := &ContainerContext{client: c}
@@ -116,8 +122,8 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 
 	ctx.containerId = resp.ID
 
-	if ops.network != "" {
-		if err := c.c.NetworkConnect(context.Background(), ops.network, resp.ID, nil); err != nil {
+	if ops.networkId != "" {
+		if err := c.c.NetworkConnect(context.Background(), ops.networkId, resp.ID, nil); err != nil {
 			return ctx, errors.Wrap(err, "network connect")
 		}
 	}
@@ -125,6 +131,14 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 	err = c.c.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{})
 	if err != nil {
 		return ctx, errors.Wrap(err, "start container")
+	}
+
+	if ops.networkId != "" {
+		containerInfo, err := c.c.ContainerInspect(context.Background(), resp.ID)
+		if err != nil {
+			return ctx, errors.Wrap(err, "container inspect")
+		}
+		ctx.ipAddr = containerInfo.NetworkSettings.Networks[ops.networkName].IPAddress
 	}
 
 	if ops.logger != nil {

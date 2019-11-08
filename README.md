@@ -5,7 +5,6 @@ Before start writing integration test on local machine
 set some environment variables
 ```bash
 APP_MODE=dev #test context loaded from config file ./conf/config_test.yml
-DOCKER_HOST_MACHINE=localhost 
 ```
 ## Simple integration test example
 ```go
@@ -14,6 +13,7 @@ package main
 import (
 	"github.com/integration-system/isp-lib-test/ctx"
 	"github.com/integration-system/isp-lib-test/docker"
+	"github.com/integration-system/isp-lib-test/utils/postgres"
 	"os"
 	"testing"
 	"time"
@@ -41,46 +41,28 @@ func TestMain(m *testing.M) {
 
 func setup(testCtx *ctx.TestContext, runTest func() int) int {
 	cfg := testCtx.BaseConfiguration()
-
 	cli, err := docker.NewClient()
 	if err != nil {
 		panic(err)
 	}
 	defer cli.Close()
+	env := docker.NewTestEnvironment(testCtx, cli)
+	defer env.Cleanup()
 
-	netCtx, err := cli.CreateNetwork(testCtx.GetDockerNetwork())
-	defer netCtx.Close()
+	_, pgCfg := env.RunPGContainer()
+	_, err = postgres.Wait(pgCfg, 10*time.Second)
 	if err != nil {
 		panic(err)
 	}
-
-	pgCfg := testCtx.GetDBConfiguration()
-	pgCtx, err := cli.RunPGContainer(
-		docker.DefaultPGImage, pgCfg.Database, pgCfg.Password,
-		docker.WithName(pgCfg.Address),
-		docker.WithNetwork(netCtx),
-		docker.PullImage("", ""),
-	)
-	defer pgCtx.ForceRemoveContainer()
-	if err != nil {
-		panic(err)
-	}
-
-	configServiceAddr := testCtx.GetConfigServiceAddress()
-	cfgCtx, err := cli.RunAppContainer(
-		cfg.Images.ConfigService, testCtx.GetConfigServiceConfiguration(), nil,
-		docker.WithName(configServiceAddr.IP),
-		docker.WithNetwork(netCtx),
-		docker.WithEnv(map[string]string{"APP_MIGRATION_PATH": "migrations_temp"}),
-		docker.PullImage(cfg.Registry.Username, cfg.Registry.Password),
-	)
-	defer cfgCtx.Close()
-	if err != nil {
-		panic(err)
-	}
+	env.RunConfigServiceContainer()	
 
     // setup others containers here
-    // dont forget to defer call ContainerContext.Close()
+	appCtx := env.RunAppContainer(
+		cfg.Images.Module,
+		appConfig,
+		remoteConf,
+		docker.WithLogger(os.Stdout),
+	)
 
 	time.Sleep(3 * time.Second)
 
