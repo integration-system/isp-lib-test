@@ -22,12 +22,12 @@ func (te *TestEnvironment) Network() *NetworkContext {
 
 func (te *TestEnvironment) Cleanup() error {
 	var errors *multierror.Error
-	for i := len(te.appContainers) - 1; i > 0; i-- {
+	for i := len(te.appContainers) - 1; i >= 0; i-- {
 		container := te.appContainers[i]
 		err := container.Close()
 		errors = multierror.Append(errors, err)
 	}
-	for i := len(te.basicContainers) - 1; i > 0; i-- {
+	for i := len(te.basicContainers) - 1; i >= 0; i-- {
 		container := te.basicContainers[i]
 		err := container.ForceRemoveContainer()
 		errors = multierror.Append(errors, err)
