@@ -40,7 +40,6 @@ func (te *TestEnvironment) Cleanup() error {
 func (te *TestEnvironment) RunAppContainer(image string, localConfig interface{}, remoteConfig interface{}, opts ...Option) *ContainerContext {
 	defaultOpts := []Option{
 		WithNetwork(te.network),
-		PullImage(te.cfg.Registry.Username, te.cfg.Registry.Password),
 	}
 	defaultOpts = append(defaultOpts, opts...)
 	appCtx, err := te.cli.RunAppContainer(
@@ -62,6 +61,7 @@ func (te *TestEnvironment) RunConfigServiceContainer(opts ...Option) (*Container
 		te.testCtx.GetConfigServiceConfiguration(),
 		nil,
 		WithName(configServiceAddr.IP),
+		PullImage(te.cfg.Registry.Username, te.cfg.Registry.Password),
 	)
 	configServiceAddr.IP = cfgCtx.GetIPAddress()
 	return cfgCtx, configServiceAddr
