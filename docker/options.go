@@ -21,7 +21,8 @@ type options struct {
 
 	name string
 
-	network string
+	networkId   string
+	networkName string
 
 	volume []string
 }
@@ -84,7 +85,8 @@ func WithName(containerName string) Option {
 // if set, container joins to specified network
 func WithNetwork(ctx *NetworkContext) Option {
 	return func(opts *options) {
-		opts.network = ctx.id
+		opts.networkId = ctx.id
+		opts.networkName = ctx.name
 	}
 }
 

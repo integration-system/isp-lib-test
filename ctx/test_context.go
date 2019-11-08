@@ -72,6 +72,7 @@ type IntegrationTestRunner struct {
 func (r *IntegrationTestRunner) PrepareAndRun() {
 	flag.Parse()
 	if testing.Short() {
+		fmt.Println("SKIP integration tests")
 		return
 	}
 

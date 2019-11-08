@@ -56,7 +56,7 @@ func NewRetryer(f func() (interface{}, error), deadlineTimeout time.Duration) *T
 	return &TimeoutRetryer{
 		f:                   f,
 		DeadlineTimeout:     deadlineTimeout,
-		AttemptTimeout:      500 * time.Millisecond,
+		AttemptTimeout:      200 * time.Millisecond,
 		AttemptErrorHanlder: nil,
 	}
 }

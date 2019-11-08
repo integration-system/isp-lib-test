@@ -11,6 +11,7 @@ type ContainerContext struct {
 	imageId     string
 	containerId string
 	client      *ispDockerClient
+	ipAddr      string
 }
 
 // force delete container and image
@@ -59,4 +60,8 @@ func (ctx *ContainerContext) ForceRemoveImage() error {
 	}
 
 	return nil
+}
+
+func (ctx *ContainerContext) GetIPAddress() string {
+	return ctx.ipAddr
 }
