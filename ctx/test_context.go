@@ -30,6 +30,9 @@ const (
 	rabbitUsername = "guest"
 	rabbitPassword = "guest"
 
+	elasticBaseHost = "isp-elastic"
+	ElasticPort     = "9200"
+
 	dockerNetwork = "isp-test-network"
 
 	DefaultIspInstanceId = "bf482806-0c3d-4e0d-b9d4-12c037b12d70"
@@ -155,6 +158,15 @@ func (ctx *TestContext) GetRabbitConfiguration() structure.RabbitConfig {
 		},
 		User:     rabbitUsername,
 		Password: rabbitPassword,
+	}
+}
+
+func (ctx *TestContext) GetElasticConfiguration() structure.ElasticConfiguration {
+	f := false
+	containerName := fmt.Sprintf("%s-%s", elasticBaseHost, ctx.baseCfg.ModuleName)
+	return structure.ElasticConfiguration{
+		URL:   fmt.Sprintf("http://%s:%s", containerName, ElasticPort),
+		Sniff: &f,
 	}
 }
 

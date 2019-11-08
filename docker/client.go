@@ -73,6 +73,9 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 	for _, v := range opts {
 		v(ops)
 	}
+	if ops.imageName != "" {
+		image = ops.imageName
+	}
 
 	ctx := &ContainerContext{client: c}
 

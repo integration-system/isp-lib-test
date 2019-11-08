@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"fmt"
 	"github.com/hashicorp/go-multierror"
 	"github.com/integration-system/isp-lib-test/ctx"
 	"github.com/integration-system/isp-lib/structure"
@@ -106,6 +107,28 @@ func (te *TestEnvironment) RunRabbitContainer(opts ...Option) (*ContainerContext
 	}
 	rabbitCfg.Address.IP = rabbitCtx.GetIPAddress()
 	return rabbitCtx, rabbitCfg
+}
+
+func (te *TestEnvironment) RunElasticContainer(opts ...Option) (*ContainerContext, structure.ElasticConfiguration) {
+	elasticConfig := te.testCtx.GetElasticConfiguration()
+	elasticContainerName := te.testCtx.GetContainer("elasticsearch")
+	defaultOpts := []Option{
+		WithName(elasticContainerName),
+		WithNetwork(te.network),
+		PullImage("", ""),
+		WithEnv(map[string]string{"discovery.type": "single-node", "ES_JAVA_OPTS": "-Xms512m -Xmx512m"}),
+	}
+	defaultOpts = append(defaultOpts, opts...)
+	elasticCtx, err := te.cli.RunContainer(
+		DefaultElasticImage,
+		defaultOpts...,
+	)
+	te.basicContainers = append(te.basicContainers, elasticCtx)
+	if err != nil {
+		panic(err)
+	}
+	elasticConfig.URL = fmt.Sprintf("http://%s:%s", elasticCtx.GetIPAddress(), ctx.ElasticPort)
+	return elasticCtx, elasticConfig
 }
 
 func NewTestEnvironment(testCtx *ctx.TestContext, cli *ispDockerClient) *TestEnvironment {

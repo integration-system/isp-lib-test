@@ -13,7 +13,7 @@ package main
 import (
 	"github.com/integration-system/isp-lib-test/ctx"
 	"github.com/integration-system/isp-lib-test/docker"
-	"github.com/integration-system/isp-lib-test/utils"
+	"github.com/integration-system/isp-lib-test/utils/postgres"
 	"os"
 	"testing"
 	"time"
@@ -50,7 +50,7 @@ func setup(testCtx *ctx.TestContext, runTest func() int) int {
 	defer env.Cleanup()
 
 	_, pgCfg := env.RunPGContainer()
-	_, err = utils.WaitPostgres(pgCfg, 10*time.Second)
+	_, err = postgres.Wait(pgCfg, 10*time.Second)
 	if err != nil {
 		panic(err)
 	}

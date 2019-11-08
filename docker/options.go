@@ -12,6 +12,7 @@ import (
 type options struct {
 	logger io.Writer
 
+	imageName     string
 	pullImage     bool
 	registryCreds string
 	portBinding   nat.PortMap
@@ -98,5 +99,11 @@ func WithVolumes(volume map[string]string) Option {
 	}
 	return func(opts *options) {
 		opts.volume = arr
+	}
+}
+
+func WithCustomImage(image string) Option {
+	return func(opts *options) {
+		opts.imageName = image
 	}
 }

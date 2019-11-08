@@ -1,16 +1,17 @@
-package utils
+package rabbit
 
 import (
+	"github.com/integration-system/isp-lib-test/utils"
 	"github.com/integration-system/isp-lib/structure"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
 	"time"
 )
 
-func WaitRabbit(rabbitCfg structure.RabbitConfig, timeout time.Duration) (*amqp.Connection, error) {
+func Wait(rabbitCfg structure.RabbitConfig, timeout time.Duration) (*amqp.Connection, error) {
 	uri := rabbitCfg.GetUri()
 
-	conn, err := AwaitConnection(func() (interface{}, error) {
+	conn, err := utils.AwaitConnection(func() (interface{}, error) {
 		c, err := amqp.Dial(uri)
 		return c, err
 	}, timeout)
