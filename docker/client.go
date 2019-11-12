@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/integration-system/isp-lib/config"
 	"github.com/pkg/errors"
@@ -18,6 +19,24 @@ type ispDockerClient struct {
 
 func (c *ispDockerClient) Close() error {
 	return c.c.Close()
+}
+
+// returns the address available from both docker containers and host machine
+// can be used to bind from the host machine and later access from docker containers
+func (c *ispDockerClient) GetBridgeAddress() (string, error) {
+	args := filters.NewArgs()
+	args.Add("name", "bridge")
+	opts := types.NetworkListOptions{Filters: args}
+	networkList, err := c.c.NetworkList(context.Background(), opts)
+	if err != nil {
+		return "", errors.Wrap(err, "get bridge network")
+	} else if len(networkList) == 0 {
+		return "", errors.New("bridge network does not exist")
+	} else if len(networkList[0].IPAM.Config) == 0 {
+		return "", errors.New("bridge network has 0 configurations")
+	}
+	ip := networkList[0].IPAM.Config[0].Gateway
+	return ip, nil
 }
 
 // create and run postgreSQL container
