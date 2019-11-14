@@ -57,11 +57,14 @@ func (te *TestEnvironment) RunAppContainer(image string, localConfig interface{}
 
 func (te *TestEnvironment) RunConfigServiceContainer(opts ...Option) (*ContainerContext, structure.AddressConfiguration) {
 	configServiceAddr := te.testCtx.GetConfigServiceAddress()
+	opts = append([]Option{
+		WithName(configServiceAddr.IP),
+		PullImage(te.cfg.Registry.Username, te.cfg.Registry.Password),
+	}, opts...)
 	cfgCtx := te.RunAppContainer(te.cfg.Images.ConfigService,
 		te.testCtx.GetConfigServiceConfiguration(),
 		nil,
-		WithName(configServiceAddr.IP),
-		PullImage(te.cfg.Registry.Username, te.cfg.Registry.Password),
+		opts...,
 	)
 	configServiceAddr.IP = cfgCtx.GetIPAddress()
 	return cfgCtx, configServiceAddr
