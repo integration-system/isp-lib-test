@@ -5,6 +5,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/pkg/errors"
 	"strings"
+	"time"
 )
 
 type ContainerContext struct {
@@ -12,6 +13,7 @@ type ContainerContext struct {
 	containerId string
 	client      *ispDockerClient
 	ipAddr      string
+	started     bool
 }
 
 // force delete container and image
@@ -59,6 +61,39 @@ func (ctx *ContainerContext) ForceRemoveImage() error {
 		ctx.imageId = ""
 	}
 
+	return nil
+}
+
+// StopContainer stops a container without terminating the process.
+// The process is blocked until the container stops or the timeout expires.
+func (ctx *ContainerContext) StopContainer(timeout time.Duration) error {
+	if ctx.containerId != "" && ctx.started {
+		err := ctx.client.c.ContainerStop(
+			context.Background(),
+			ctx.containerId,
+			&timeout,
+		)
+		if err != nil {
+			return errors.Wrap(err, "container stop")
+		}
+	}
+	ctx.started = false
+	return nil
+}
+
+// StartContainer sends a request to the docker daemon to start a container.
+func (ctx *ContainerContext) StartContainer() error {
+	if ctx.containerId != "" && !ctx.started {
+		err := ctx.client.c.ContainerStart(
+			context.Background(),
+			ctx.containerId,
+			types.ContainerStartOptions{},
+		)
+		if err != nil {
+			return errors.Wrap(err, "container start")
+		}
+	}
+	ctx.started = true
 	return nil
 }
 

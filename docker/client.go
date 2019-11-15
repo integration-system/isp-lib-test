@@ -173,7 +173,7 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 			_, _ = io.Copy(ops.logger, reader)
 		}()
 	}
-
+	ctx.started = true
 	return ctx, nil
 }
 
