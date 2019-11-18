@@ -169,6 +169,7 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 		if err != nil {
 			return ctx, errors.Wrap(err, "attach logger")
 		}
+		ctx.logger = ops.logger
 		go func() {
 			_, _ = io.Copy(ops.logger, reader)
 		}()

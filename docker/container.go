@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/docker/docker/api/types"
 	"github.com/pkg/errors"
+	"io"
 	"strings"
 	"time"
 )
@@ -14,6 +15,7 @@ type ContainerContext struct {
 	client      *ispDockerClient
 	ipAddr      string
 	started     bool
+	logger      io.Writer
 }
 
 // force delete container and image
@@ -91,6 +93,19 @@ func (ctx *ContainerContext) StartContainer() error {
 		)
 		if err != nil {
 			return errors.Wrap(err, "container start")
+		}
+		if ctx.logger != nil {
+			reader, err := ctx.client.c.ContainerLogs(
+				context.Background(),
+				ctx.containerId,
+				types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true},
+			)
+			if err != nil {
+				return errors.Wrap(err, "attach container logger")
+			}
+			go func() {
+				_, _ = io.Copy(ctx.logger, reader)
+			}()
 		}
 	}
 	ctx.started = true
