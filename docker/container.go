@@ -95,10 +95,11 @@ func (ctx *ContainerContext) StartContainer() error {
 			return errors.Wrap(err, "container start")
 		}
 		if ctx.logger != nil {
+			now := time.Now().Format("2006-01-02T15:04:05")
 			reader, err := ctx.client.c.ContainerLogs(
 				context.Background(),
 				ctx.containerId,
-				types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true},
+				types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Since: now},
 			)
 			if err != nil {
 				return errors.Wrap(err, "attach container logger")
