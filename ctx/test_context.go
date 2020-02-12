@@ -3,12 +3,13 @@ package ctx
 import (
 	"flag"
 	"fmt"
-	"github.com/integration-system/isp-lib/structure"
-	"github.com/integration-system/isp-lib/utils"
-	"github.com/spf13/viper"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/integration-system/isp-lib/v2/structure"
+	"github.com/integration-system/isp-lib/v2/utils"
+	"github.com/spf13/viper"
 )
 
 const (

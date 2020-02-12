@@ -2,11 +2,12 @@ package docker
 
 import (
 	"fmt"
-	"github.com/integration-system/bellows"
-	"github.com/integration-system/isp-lib/config"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/integration-system/bellows"
+	"github.com/integration-system/isp-lib/v2/config"
 )
 
 func configToEnvVariables(config interface{}, prefix string, withTypes bool) []string {

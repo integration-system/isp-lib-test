@@ -1,10 +1,11 @@
 package nats
 
 import (
-	"github.com/integration-system/isp-lib-test/utils"
-	"github.com/integration-system/isp-lib/nats"
-	"github.com/integration-system/isp-lib/structure"
 	"time"
+
+	"github.com/integration-system/isp-lib-test/utils"
+	"github.com/integration-system/isp-lib/v2/nats"
+	"github.com/integration-system/isp-lib/v2/structure"
 )
 
 func Wait(natsConfig structure.NatsConfig, timeout time.Duration) (*nats.RxNatsClient, error) {

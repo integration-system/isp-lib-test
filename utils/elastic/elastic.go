@@ -2,11 +2,12 @@ package elastic
 
 import (
 	"context"
+	"time"
+
 	"github.com/integration-system/isp-lib-test/utils"
-	"github.com/integration-system/isp-lib/structure"
+	"github.com/integration-system/isp-lib/v2/structure"
 	"github.com/olivere/elastic"
 	"github.com/olivere/elastic/config"
-	"time"
 )
 
 func Wait(cfg structure.ElasticConfiguration, timeout time.Duration) (*elastic.Client, error) {

@@ -3,14 +3,15 @@ package docker
 import (
 	"context"
 	"fmt"
+	"io"
+	"io/ioutil"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
-	"github.com/integration-system/isp-lib/config"
+	"github.com/integration-system/isp-lib/v2/config"
 	"github.com/pkg/errors"
-	"io"
-	"io/ioutil"
 )
 
 type ispDockerClient struct {

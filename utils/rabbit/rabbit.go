@@ -1,11 +1,12 @@
 package rabbit
 
 import (
+	"time"
+
 	"github.com/integration-system/isp-lib-test/utils"
-	"github.com/integration-system/isp-lib/structure"
+	"github.com/integration-system/isp-lib/v2/structure"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
-	"time"
 )
 
 func Wait(rabbitCfg structure.RabbitConfig, timeout time.Duration) (*amqp.Connection, error) {

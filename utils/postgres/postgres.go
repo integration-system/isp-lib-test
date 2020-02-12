@@ -1,11 +1,12 @@
 package postgres
 
 import (
-	"github.com/go-pg/pg"
-	"github.com/integration-system/isp-lib-test/utils"
-	"github.com/integration-system/isp-lib/database"
-	"github.com/integration-system/isp-lib/structure"
 	"time"
+
+	"github.com/go-pg/pg/v9"
+	"github.com/integration-system/isp-lib-test/utils"
+	"github.com/integration-system/isp-lib/v2/database"
+	"github.com/integration-system/isp-lib/v2/structure"
 )
 
 func Wait(dbConfiguration structure.DBConfiguration, timeout time.Duration) (*pg.DB, error) {

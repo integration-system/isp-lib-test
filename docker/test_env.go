@@ -2,9 +2,10 @@ package docker
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/go-multierror"
 	"github.com/integration-system/isp-lib-test/ctx"
-	"github.com/integration-system/isp-lib/structure"
+	"github.com/integration-system/isp-lib/v2/structure"
 )
 
 type TestEnvironment struct {
