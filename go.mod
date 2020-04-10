@@ -11,7 +11,7 @@ require (
 	github.com/fortytw2/leaktest v1.3.0 // indirect
 	github.com/go-pg/pg/v9 v9.1.5
 	github.com/hashicorp/go-multierror v1.0.0
-	github.com/integration-system/bellows v1.0.0
+	github.com/integration-system/bellows v1.0.1
 	github.com/integration-system/isp-lib/v2 v2.4.0
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/olivere/elastic v6.2.29+incompatible

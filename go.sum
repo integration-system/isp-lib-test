@@ -149,6 +149,8 @@ github.com/integration-system/bellows v0.0.0-20190821124023-244325e8836c h1:yyIH
 github.com/integration-system/bellows v0.0.0-20190821124023-244325e8836c/go.mod h1:6cf4ZNvtzZ/KMiuc+d5Y7rSHjzlYBWEqbVyDfUDhqIE=
 github.com/integration-system/bellows v1.0.0 h1:fVFBYo7Oty4IiIWukjSgBoaCi+0EmPz7LMO8ACs+gDc=
 github.com/integration-system/bellows v1.0.0/go.mod h1:qHPg1ptN3AHHr0f/wvoicfA2LOCprOyrbXnIa5QIRe0=
+github.com/integration-system/bellows v1.0.1 h1:7g1lhD/6EcvsSo9iuiFqw98XGS78Sko6kUKPzfte/SY=
+github.com/integration-system/bellows v1.0.1/go.mod h1:qHPg1ptN3AHHr0f/wvoicfA2LOCprOyrbXnIa5QIRe0=
 github.com/integration-system/go-cmp v0.0.0-20190131081942-ac5582987a2f h1:52UOJguw5yqe1y2JjmyVxGcZf3kv2BQeUodR363MkiQ=
 github.com/integration-system/go-cmp v0.0.0-20190131081942-ac5582987a2f/go.mod h1:w+dmaWojuIwNujSYg6qt1wKHhSdorLOivCEl/XuLzbM=
 github.com/integration-system/gowsdl v1.0.0/go.mod h1:ZwTCE+Av5aQLnPj2/3PIop6mzCs1FY7jXrcWDvSjrBA=
