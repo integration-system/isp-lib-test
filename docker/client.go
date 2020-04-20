@@ -146,37 +146,10 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 		if err := c.c.NetworkConnect(context.Background(), ops.networkId, resp.ID, nil); err != nil {
 			return ctx, errors.Wrap(err, "network connect")
 		}
+		ctx.networkName = ops.networkName
 	}
 
-	err = c.c.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{})
-	if err != nil {
-		return ctx, errors.Wrap(err, "start container")
-	}
-
-	if ops.networkId != "" {
-		containerInfo, err := c.c.ContainerInspect(context.Background(), resp.ID)
-		if err != nil {
-			return ctx, errors.Wrap(err, "container inspect")
-		}
-		ctx.ipAddr = containerInfo.NetworkSettings.Networks[ops.networkName].IPAddress
-	}
-
-	if ops.logger != nil {
-		reader, err := c.c.ContainerLogs(
-			context.Background(),
-			resp.ID,
-			types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true},
-		)
-		if err != nil {
-			return ctx, errors.Wrap(err, "attach logger")
-		}
-		ctx.logger = ops.logger
-		go func() {
-			_, _ = io.Copy(ops.logger, reader)
-		}()
-	}
-	ctx.started = true
-	return ctx, nil
+	return ctx, ctx.StartContainer()
 }
 
 func NewClient() (*ispDockerClient, error) {

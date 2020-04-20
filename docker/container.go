@@ -14,6 +14,7 @@ type ContainerContext struct {
 	containerId string
 	client      *ispDockerClient
 	ipAddr      string
+	networkName string
 	started     bool
 	logger      io.Writer
 }
@@ -85,30 +86,46 @@ func (ctx *ContainerContext) StopContainer(timeout time.Duration) error {
 
 // StartContainer sends a request to the docker daemon to start a container.
 func (ctx *ContainerContext) StartContainer() error {
-	if ctx.containerId != "" && !ctx.started {
-		err := ctx.client.c.ContainerStart(
-			context.Background(),
-			ctx.containerId,
-			types.ContainerStartOptions{},
-		)
+	if ctx.containerId == "" || ctx.started {
+		return nil
+	}
+
+	logSince := time.Now().Format("2006-01-02T15:04:05")
+	err := ctx.client.c.ContainerStart(
+		context.Background(),
+		ctx.containerId,
+		types.ContainerStartOptions{},
+	)
+	if err != nil {
+		return errors.Wrap(err, "container start")
+	}
+
+	if ctx.networkName != "" {
+		containerInfo, err := ctx.client.c.ContainerInspect(context.Background(), ctx.containerId)
 		if err != nil {
-			return errors.Wrap(err, "container start")
+			return errors.Wrap(err, "container inspect")
 		}
-		if ctx.logger != nil {
-			now := time.Now().Format("2006-01-02T15:04:05")
-			reader, err := ctx.client.c.ContainerLogs(
-				context.Background(),
-				ctx.containerId,
-				types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Since: now},
-			)
-			if err != nil {
-				return errors.Wrap(err, "attach container logger")
+		if containerInfo.NetworkSettings != nil {
+			if net, ok := containerInfo.NetworkSettings.Networks[ctx.networkName]; ok {
+				ctx.ipAddr = net.IPAddress
 			}
-			go func() {
-				_, _ = io.Copy(ctx.logger, reader)
-			}()
 		}
 	}
+
+	if ctx.logger != nil {
+		reader, err := ctx.client.c.ContainerLogs(
+			context.Background(),
+			ctx.containerId,
+			types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true, Since: logSince},
+		)
+		if err != nil {
+			return errors.Wrap(err, "attach container logger")
+		}
+		go func() {
+			_, _ = io.Copy(ctx.logger, reader)
+		}()
+	}
+
 	ctx.started = true
 	return nil
 }
