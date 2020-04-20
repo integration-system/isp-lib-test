@@ -149,6 +149,8 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 		ctx.networkName = ops.networkName
 	}
 
+	ctx.logger = ops.logger
+
 	return ctx, ctx.StartContainer()
 }
 
