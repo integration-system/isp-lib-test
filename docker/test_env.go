@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/signal"
 	"sync"
-	"syscall"
 	"time"
 
 	"github.com/hashicorp/go-multierror"
@@ -151,7 +150,7 @@ func (te *TestEnvironment) RunElasticContainer(opts ...Option) (*ContainerContex
 
 func (te *TestEnvironment) signalCleanupper() {
 	quit := make(chan os.Signal, 2)
-	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGQUIT)
+	signal.Notify(quit, signals...)
 	fmt.Println("Receives signal: ", <-quit)
 	timoutCh := time.After(3 * time.Second)
 	done := make(chan struct{}, 1)
