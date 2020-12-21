@@ -2,6 +2,10 @@ package docker
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"sync"
+	"time"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/integration-system/isp-lib-test/ctx"
@@ -15,6 +19,8 @@ type TestEnvironment struct {
 	network         *NetworkContext
 	basicContainers []*ContainerContext
 	appContainers   []*ContainerContext
+	cleanupFlag     bool
+	mu              *sync.Mutex
 }
 
 func (te *TestEnvironment) Network() *NetworkContext {
@@ -22,6 +28,13 @@ func (te *TestEnvironment) Network() *NetworkContext {
 }
 
 func (te *TestEnvironment) Cleanup() error {
+	te.mu.Lock()
+	defer te.mu.Unlock()
+	if te.cleanupFlag {
+		return nil
+	}
+	te.cleanupFlag = true
+
 	var errors *multierror.Error
 	for i := len(te.appContainers) - 1; i >= 0; i-- {
 		container := te.appContainers[i]
@@ -135,6 +148,34 @@ func (te *TestEnvironment) RunElasticContainer(opts ...Option) (*ContainerContex
 	return elasticCtx, elasticConfig
 }
 
+func (te *TestEnvironment) signalCleanupper() {
+	quit := make(chan os.Signal, 2)
+	signal.Notify(quit, signals...)
+	fmt.Println("Receives signal: ", <-quit)
+	timoutCh := time.After(3 * time.Second)
+	done := make(chan struct{}, 1)
+
+	go func() {
+		err := te.Cleanup()
+		if err != nil {
+			fmt.Printf("Cleanup() was returned an error: %v", err)
+		}
+		done <- struct{}{}
+	}()
+
+	select {
+	case <-timoutCh:
+		fmt.Println("exit timeout reached: terminating...")
+		os.Exit(-1)
+	case sig := <-quit:
+		fmt.Printf("duplicated exit signal: %s: terminating...\n", sig)
+		os.Exit(-1)
+	case <-done:
+		fmt.Println("correctly exit by signal")
+		os.Exit(0)
+	}
+}
+
 func NewTestEnvironment(testCtx *ctx.TestContext, cli *ispDockerClient) *TestEnvironment {
 	netCtx, err := cli.CreateNetwork(testCtx.GetDockerNetwork())
 	if err != nil {
@@ -146,6 +187,8 @@ func NewTestEnvironment(testCtx *ctx.TestContext, cli *ispDockerClient) *TestEnv
 		cfg:     testCtx.BaseConfiguration(),
 		cli:     cli,
 		network: netCtx,
+		mu:      &sync.Mutex{},
 	}
+	go env.signalCleanupper()
 	return env
 }
