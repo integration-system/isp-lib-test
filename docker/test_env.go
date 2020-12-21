@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/signal"
 	"sync"
-	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -21,8 +20,8 @@ type TestEnvironment struct {
 	network         *NetworkContext
 	basicContainers []*ContainerContext
 	appContainers   []*ContainerContext
-	cleanupFlag     int32
-	wg              *sync.WaitGroup
+	cleanupFlag     bool
+	mu              *sync.Mutex
 }
 
 func (te *TestEnvironment) Network() *NetworkContext {
@@ -30,12 +29,12 @@ func (te *TestEnvironment) Network() *NetworkContext {
 }
 
 func (te *TestEnvironment) Cleanup() error {
-	if !atomic.CompareAndSwapInt32(&te.cleanupFlag, 0, 1) {
-		defer te.wg.Wait()
+	te.mu.Lock()
+	defer te.mu.Unlock()
+	if te.cleanupFlag {
 		return nil
 	}
-	te.wg.Add(1)
-	defer te.wg.Done()
+	te.cleanupFlag = true
 
 	var errors *multierror.Error
 	for i := len(te.appContainers) - 1; i >= 0; i-- {
@@ -155,16 +154,14 @@ func (te *TestEnvironment) signalCleanupper() {
 	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGQUIT)
 	fmt.Println("Receives signal: ", <-quit)
 	timoutCh := time.After(3 * time.Second)
-	done := make(chan int, 1)
+	done := make(chan struct{}, 1)
 
 	go func() {
 		err := te.Cleanup()
 		if err != nil {
 			fmt.Printf("Cleanup() was returned an error: %v", err)
-			done <- -1
-		} else {
-			done <- 0
 		}
+		done <- struct{}{}
 	}()
 
 	select {
@@ -174,11 +171,9 @@ func (te *TestEnvironment) signalCleanupper() {
 	case sig := <-quit:
 		fmt.Printf("duplicated exit signal: %s: terminating...\n", sig)
 		os.Exit(-1)
-	case d := <-done:
-		if d == 0 {
-			fmt.Println("correctly exit by signal")
-			os.Exit(0)
-		}
+	case <-done:
+		fmt.Println("correctly exit by signal")
+		os.Exit(0)
 	}
 }
 
@@ -193,7 +188,7 @@ func NewTestEnvironment(testCtx *ctx.TestContext, cli *ispDockerClient) *TestEnv
 		cfg:     testCtx.BaseConfiguration(),
 		cli:     cli,
 		network: netCtx,
-		wg:      &sync.WaitGroup{},
+		mu:      &sync.Mutex{},
 	}
 	go env.signalCleanupper()
 	return env
