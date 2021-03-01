@@ -3,13 +3,13 @@ package rabbit
 import (
 	"time"
 
+	"github.com/integration-system/isp-event-lib/mq"
 	"github.com/integration-system/isp-lib-test/utils"
-	"github.com/integration-system/isp-lib/v2/structure"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
 )
 
-func Wait(rabbitCfg structure.RabbitConfig, timeout time.Duration) (*amqp.Connection, error) {
+func Wait(rabbitCfg mq.Config, timeout time.Duration) (*amqp.Connection, error) {
 	uri := rabbitCfg.GetUri()
 
 	conn, err := utils.AwaitConnection(func() (interface{}, error) {
@@ -35,7 +35,7 @@ func DeclareQueue(conn *amqp.Connection, queueName string) error {
 	return err
 }
 
-func MakeRabbitChannel(config structure.RabbitConfig) (*amqp.Channel, error) {
+func MakeRabbitChannel(config mq.Config) (*amqp.Channel, error) {
 	conn, err := amqp.Dial(config.GetUri())
 	if err != nil {
 		return nil, err

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-multierror"
+	"github.com/integration-system/isp-event-lib/mq"
 	"github.com/integration-system/isp-lib-test/ctx"
 	"github.com/integration-system/isp-lib/v2/structure"
 )
@@ -106,7 +107,7 @@ func (te *TestEnvironment) RunPGContainer(opts ...Option) (*ContainerContext, st
 	return pgCtx, pgCfg
 }
 
-func (te *TestEnvironment) RunRabbitContainer(opts ...Option) (*ContainerContext, structure.RabbitConfig) {
+func (te *TestEnvironment) RunRabbitContainer(opts ...Option) (*ContainerContext, mq.Config) {
 	rabbitCfg := te.testCtx.GetRabbitConfiguration()
 	defaultOpts := []Option{
 		WithName(rabbitCfg.Address.IP),

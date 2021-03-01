@@ -7,6 +7,8 @@ import (
 	"path"
 	"testing"
 
+	"github.com/integration-system/isp-event-lib/event"
+	"github.com/integration-system/isp-event-lib/mq"
 	"github.com/integration-system/isp-lib/v2/structure"
 	"github.com/integration-system/isp-lib/v2/utils"
 	"github.com/spf13/viper"
@@ -151,9 +153,9 @@ func (ctx *TestContext) GetDBConfiguration() structure.DBConfiguration {
 	}
 }
 
-func (ctx *TestContext) GetRabbitConfiguration() structure.RabbitConfig {
-	return structure.RabbitConfig{
-		Address: structure.AddressConfiguration{
+func (ctx *TestContext) GetRabbitConfiguration() mq.Config {
+	return mq.Config{
+		Address: event.AddressConfiguration{
 			IP:   fmt.Sprintf("%s-%s", rabbitBaseHost, ctx.baseCfg.ModuleName),
 			Port: rabbitPort,
 		},
