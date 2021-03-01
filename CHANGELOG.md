@@ -1,3 +1,5 @@
+### v1.5.6
+* moved event entities from isp-lib to event-lib
 ### v1.5.5
 * add protection for docker Cleanup from stopping tests by the interrupt or kill signals
 ### v1.5.4
