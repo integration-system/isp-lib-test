@@ -1,3 +1,6 @@
+### v1.6.0
+* add `-cleanup` flag to clean up the non-cleaned docker staff containerIds and imageIds from previous build
+* non-cleaned docker staff from previous build saves in `dockerBackupXX..X`, where XX..X is unix timestamp
 ### v1.5.6
 * moved event entities from isp-lib to event-lib
 ### v1.5.5

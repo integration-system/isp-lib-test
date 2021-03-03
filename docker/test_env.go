@@ -22,6 +22,7 @@ type TestEnvironment struct {
 	appContainers   []*ContainerContext
 	cleanupFlag     bool
 	mu              *sync.Mutex
+	backup          *backup
 }
 
 func (te *TestEnvironment) Network() *NetworkContext {
@@ -49,6 +50,9 @@ func (te *TestEnvironment) Cleanup() error {
 	}
 	err := te.network.Close()
 	errors = multierror.Append(errors, err)
+
+	err = os.Remove(getFileName())
+	errors = multierror.Append(errors, err)
 	return errors.ErrorOrNil()
 }
 
@@ -64,6 +68,7 @@ func (te *TestEnvironment) RunAppContainer(image string, localConfig interface{}
 		defaultOpts...,
 	)
 	te.appContainers = append(te.appContainers, appCtx)
+	te.makeBackupFile()
 	if err != nil {
 		panic(err)
 	}
@@ -82,6 +87,7 @@ func (te *TestEnvironment) RunConfigServiceContainer(opts ...Option) (*Container
 		opts...,
 	)
 	configServiceAddr.IP = cfgCtx.GetIPAddress()
+	te.makeBackupFile()
 	return cfgCtx, configServiceAddr
 }
 
@@ -100,6 +106,7 @@ func (te *TestEnvironment) RunPGContainer(opts ...Option) (*ContainerContext, st
 		defaultOpts...,
 	)
 	te.basicContainers = append(te.basicContainers, pgCtx)
+	te.makeBackupFile()
 	if err != nil {
 		panic(err)
 	}
@@ -120,6 +127,7 @@ func (te *TestEnvironment) RunRabbitContainer(opts ...Option) (*ContainerContext
 		defaultOpts...,
 	)
 	te.basicContainers = append(te.basicContainers, rabbitCtx)
+	te.makeBackupFile()
 	if err != nil {
 		panic(err)
 	}
@@ -142,6 +150,7 @@ func (te *TestEnvironment) RunElasticContainer(opts ...Option) (*ContainerContex
 		defaultOpts...,
 	)
 	te.basicContainers = append(te.basicContainers, elasticCtx)
+	te.makeBackupFile()
 	if err != nil {
 		panic(err)
 	}
@@ -189,7 +198,12 @@ func NewTestEnvironment(testCtx *ctx.TestContext, cli *ispDockerClient) *TestEnv
 		cli:     cli,
 		network: netCtx,
 		mu:      &sync.Mutex{},
+		backup: &backup{
+			BasicContainers: make(map[containerId]imageId, 0),
+			AppContainers:   make(map[containerId]imageId, 0),
+		},
 	}
+	env.makeBackupFile()
 	go env.signalCleanupper()
 	return env
 }

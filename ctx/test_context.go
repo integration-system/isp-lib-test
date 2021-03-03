@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/integration-system/isp-event-lib/event"
 	"github.com/integration-system/isp-event-lib/mq"
+	"github.com/integration-system/isp-lib-test/internal"
 	"github.com/integration-system/isp-lib/v2/structure"
 	"github.com/integration-system/isp-lib/v2/utils"
 	"github.com/spf13/viper"
@@ -70,9 +73,28 @@ type IntegrationTestRunner struct {
 	runner Runner
 }
 
+var (
+	backupCleanupFlag = flag.Bool("cleanup", false,
+		"removed docker containers and images that was not removed by previous test launch")
+	currentSessionName = strconv.FormatInt(time.Now().UnixNano(), 10)
+)
+
 // run test only if test.short is false or not specified
 func (r *IntegrationTestRunner) PrepareAndRun() {
 	flag.Parse()
+
+	if *backupCleanupFlag {
+		if internal.CleanupByBackup == nil {
+			fmt.Println("Can't cleanup by backup - docker package not imported")
+		} else {
+			fmt.Println("Start cleanup by backup")
+			err := internal.CleanupByBackup()
+			if err != nil {
+				fmt.Printf("while docker backup cleanup: %v\n", err)
+			}
+		}
+	}
+
 	if testing.Short() {
 		fmt.Println("SKIP integration tests")
 		return
@@ -80,6 +102,10 @@ func (r *IntegrationTestRunner) PrepareAndRun() {
 
 	code := r.runner(r.ctx, r.m.Run)
 	os.Exit(code)
+}
+
+func CurrentSessionName() string {
+	return currentSessionName
 }
 
 type Testable interface {
@@ -125,7 +151,7 @@ func (ctx *TestContext) GetConfigServiceConfiguration() ConfigServiceLocalConfig
 	return ConfigServiceLocalConfiguration{
 		Database: dbCfg,
 		GrpcOuterAddress: structure.AddressConfiguration{
-			IP:   fmt.Sprintf("%s-%s", configServiceBaseHost, ctx.baseCfg.ModuleName),
+			IP:   fmt.Sprintf("%s-%s", configServiceBaseHost, ctx.buildName()),
 			Port: configServiceGrpcPort,
 		},
 		ModuleName: configModuleName,
@@ -144,7 +170,7 @@ func (ctx *TestContext) GetConfigServiceConfiguration() ConfigServiceLocalConfig
 
 func (ctx *TestContext) GetDBConfiguration() structure.DBConfiguration {
 	return structure.DBConfiguration{
-		Address:      fmt.Sprintf("%s-%s", pgSqlBaseHost, ctx.baseCfg.ModuleName),
+		Address:      fmt.Sprintf("%s-%s", pgSqlBaseHost, ctx.buildName()),
 		Port:         pgSqlPort,
 		Database:     PgSqlDbName,
 		Username:     PgSqlDbName,
@@ -156,7 +182,7 @@ func (ctx *TestContext) GetDBConfiguration() structure.DBConfiguration {
 func (ctx *TestContext) GetRabbitConfiguration() mq.Config {
 	return mq.Config{
 		Address: event.AddressConfiguration{
-			IP:   fmt.Sprintf("%s-%s", rabbitBaseHost, ctx.baseCfg.ModuleName),
+			IP:   fmt.Sprintf("%s-%s", rabbitBaseHost, ctx.buildName()),
 			Port: rabbitPort,
 		},
 		User:     rabbitUsername,
@@ -166,7 +192,7 @@ func (ctx *TestContext) GetRabbitConfiguration() mq.Config {
 
 func (ctx *TestContext) GetElasticConfiguration() structure.ElasticConfiguration {
 	f := false
-	containerName := fmt.Sprintf("%s-%s", elasticBaseHost, ctx.baseCfg.ModuleName)
+	containerName := fmt.Sprintf("%s-%s", elasticBaseHost, ctx.buildName())
 	return structure.ElasticConfiguration{
 		URL:   fmt.Sprintf("http://%s:%s", containerName, ElasticPort),
 		Sniff: &f,
@@ -175,13 +201,13 @@ func (ctx *TestContext) GetElasticConfiguration() structure.ElasticConfiguration
 
 func (ctx *TestContext) GetConfigServiceAddress() structure.AddressConfiguration {
 	return structure.AddressConfiguration{
-		IP:   fmt.Sprintf("%s-%s", configServiceBaseHost, ctx.baseCfg.ModuleName),
+		IP:   fmt.Sprintf("%s-%s", configServiceBaseHost, ctx.buildName()),
 		Port: configServiceHttpPort,
 	}
 }
 
 func (ctx *TestContext) GetDockerNetwork() string {
-	return fmt.Sprintf("%s-%s", dockerNetwork, ctx.baseCfg.ModuleName)
+	return fmt.Sprintf("%s-%s", dockerNetwork, ctx.buildName())
 }
 
 func (ctx *TestContext) GetModuleLocalConfig(port, moduleName string) DefaultLocalConfiguration {
@@ -199,7 +225,11 @@ func (ctx *TestContext) GetImage(imageName string) string {
 }
 
 func (ctx *TestContext) GetContainer(baseContainerName string) string {
-	return fmt.Sprintf("isp-test-%s-%s", baseContainerName, ctx.baseCfg.ModuleName)
+	return fmt.Sprintf("isp-test-%s-%s", baseContainerName, ctx.buildName())
+}
+
+func (ctx *TestContext) buildName() string {
+	return ctx.baseCfg.ModuleName + CurrentSessionName()
 }
 
 // crate integration test context, load test configuration from file
