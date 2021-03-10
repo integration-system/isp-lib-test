@@ -1,3 +1,5 @@
+### v1.6.1
+* add a workaround to set non-existent in config values by env vars
 ### v1.6.0
 * Add `-cleanup` flag to clean up the non-cleaned docker staff containerIds and imageIds from previous build  
   non-cleaned docker staff from previous build saves in `isp-test-docker-session_XXX`, where XXX is unix timestamp
