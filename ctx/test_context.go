@@ -1,6 +1,7 @@
 package ctx
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
@@ -15,6 +16,7 @@ import (
 	"github.com/integration-system/isp-lib/v2/structure"
 	"github.com/integration-system/isp-lib/v2/utils"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -250,6 +252,7 @@ func loadCtx(configPtr Testable) (*TestContext, error) {
 
 	viper.SetEnvPrefix(TestConfigEnvPrefix)
 	viper.AutomaticEnv()
+	bindEnvs(viper, configPtr)
 
 	envConfigName := "config_test"
 	ex, _ := os.Executable()
@@ -272,4 +275,27 @@ func loadCtx(configPtr Testable) (*TestContext, error) {
 		cfg:     configPtr,
 		baseCfg: configPtr.GetBaseConfiguration(),
 	}, nil
+}
+
+// Workaround because viper does not treat env vars the same as other config.
+// See https://github.com/spf13/viper/issues/761.
+func bindEnvs(cfg *viper.Viper, rawVal interface{}) {
+	for _, k := range allKeys(rawVal) {
+		_ = cfg.BindEnv(k)
+	}
+}
+
+func allKeys(rawVal interface{}) []string {
+	b, err := yaml.Marshal(rawVal)
+	if err != nil {
+		return nil
+	}
+
+	v := viper.New()
+	v.SetConfigType("yaml")
+	if err := v.ReadConfig(bytes.NewReader(b)); err != nil {
+		return nil
+	}
+
+	return v.AllKeys()
 }
