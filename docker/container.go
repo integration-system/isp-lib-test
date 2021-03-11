@@ -2,11 +2,12 @@ package docker
 
 import (
 	"context"
-	"github.com/docker/docker/api/types"
-	"github.com/pkg/errors"
 	"io"
 	"strings"
 	"time"
+
+	"github.com/docker/docker/api/types"
+	"github.com/pkg/errors"
 )
 
 type ContainerContext struct {
@@ -39,7 +40,7 @@ func (ctx *ContainerContext) ForceRemoveContainer() error {
 		err := ctx.client.c.ContainerRemove(
 			context.Background(),
 			ctx.containerId,
-			types.ContainerRemoveOptions{Force: true},
+			types.ContainerRemoveOptions{Force: true, RemoveVolumes: true},
 		)
 		if err != nil {
 			return errors.Wrap(err, "container remove")

@@ -1,3 +1,5 @@
+### v1.6.2
+* remove volumes with containers to prevent leaking disk space
 ### v1.6.1
 * add a workaround to set non-existent in config values by env vars
 ### v1.6.0
