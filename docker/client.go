@@ -135,7 +135,7 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 		Image:        image,
 		Env:          envVars,
 		ExposedPorts: ops.portSet,
-	}, hostCfg, nil, ops.name)
+	}, hostCfg, nil, nil, ops.name)
 	if err != nil {
 		return ctx, errors.Wrap(err, "create container")
 	}
@@ -180,7 +180,10 @@ func (c *ispDockerClient) runContainer(image string, envVars []string, opts ...O
 }
 
 func NewClient() (*ispDockerClient, error) {
-	cli, err := client.NewEnvClient()
+	cli, err := client.NewClientWithOpts(
+		client.FromEnv,
+		client.WithAPIVersionNegotiation(),
+	)
 	if err != nil {
 		return nil, err
 	}

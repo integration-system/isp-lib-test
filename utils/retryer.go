@@ -20,7 +20,8 @@ type TimeoutRetryer struct {
 
 func (r *TimeoutRetryer) Do() (interface{}, error) {
 	ch := make(chan interface{})
-	ctx, _ := context.WithTimeout(context.Background(), r.DeadlineTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), r.DeadlineTimeout)
+	defer cancel()
 
 	retrying := int32(1)
 	go func() {
