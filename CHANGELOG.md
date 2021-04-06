@@ -1,3 +1,5 @@
+### v1.6.3
+* fix build for !linux targets
 ### v1.6.2
 * remove volumes with containers to prevent leaking disk space
 * update deps
