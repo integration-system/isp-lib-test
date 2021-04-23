@@ -1,3 +1,5 @@
+### v1.6.4
+* fix data race (after context done, new `for` loop iteration can be started after success condition with old atomic value)
 ### v1.6.3
 * fix build for !linux targets
 ### v1.6.2
