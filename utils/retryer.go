@@ -1,9 +1,7 @@
 package utils
 
 import (
-	"context"
 	"errors"
-	"sync/atomic"
 	"time"
 )
 
@@ -19,33 +17,24 @@ type TimeoutRetryer struct {
 }
 
 func (r *TimeoutRetryer) Do() (interface{}, error) {
-	ch := make(chan interface{})
-	ctx, cancel := context.WithTimeout(context.Background(), r.DeadlineTimeout)
-	defer cancel()
+	deadLine := time.After(r.DeadlineTimeout)
 
-	retrying := int32(1)
-	go func() {
-		for atomic.LoadInt32(&retrying) == 1 {
-			c, err := r.f()
-			if err != nil {
-				if r.AttemptErrorHanlder != nil {
-					r.AttemptErrorHanlder(err)
-				}
-				time.Sleep(r.AttemptTimeout)
-				continue
-			} else {
-				ch <- c
-				return
-			}
+	for {
+		select {
+		case <-deadLine:
+			return nil, ErrDeadlineExceeded
+		case <-time.After(r.AttemptTimeout):
 		}
-	}()
 
-	select {
-	case value := <-ch:
-		return value, nil
-	case <-ctx.Done():
-		atomic.StoreInt32(&retrying, 0)
-		return nil, ErrDeadlineExceeded
+		c, err := r.f()
+		if err != nil {
+			if r.AttemptErrorHanlder != nil {
+				r.AttemptErrorHanlder(err)
+			}
+			continue
+		}
+
+		return c, nil
 	}
 }
 
