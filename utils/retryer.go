@@ -18,12 +18,16 @@ type TimeoutRetryer struct {
 
 func (r *TimeoutRetryer) Do() (interface{}, error) {
 	deadLine := time.After(r.DeadlineTimeout)
+	// use closed channel to trigger select on the first iteration of the loop
+	tempCh := make(chan time.Time)
+	close(tempCh)
+	var retryCh <-chan time.Time = tempCh
 
 	for {
 		select {
 		case <-deadLine:
 			return nil, ErrDeadlineExceeded
-		case <-time.After(r.AttemptTimeout):
+		case <-retryCh:
 		}
 
 		c, err := r.f()
@@ -31,6 +35,7 @@ func (r *TimeoutRetryer) Do() (interface{}, error) {
 			if r.AttemptErrorHanlder != nil {
 				r.AttemptErrorHanlder(err)
 			}
+			retryCh = time.After(r.AttemptTimeout)
 			continue
 		}
 
