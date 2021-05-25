@@ -1,3 +1,6 @@
+### v1.6.5
+* utils.TimeoutRetryer: remove unnecessary waiting before first attempt of retryer
+* remove deprecated InstanceUuid
 ### v1.6.4
 * fix data race (after context done, new `for` loop iteration can be started after success condition with old atomic value)
 ### v1.6.3

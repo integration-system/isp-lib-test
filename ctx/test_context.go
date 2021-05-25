@@ -43,8 +43,6 @@ const (
 
 	dockerNetwork = "isp-test-network"
 
-	DefaultIspInstanceId = "bf482806-0c3d-4e0d-b9d4-12c037b12d70"
-
 	TestConfigEnvPrefix = "ISP_TEST"
 )
 
@@ -63,7 +61,6 @@ type DefaultLocalConfiguration struct {
 	GrpcOuterAddress     structure.AddressConfiguration
 	GrpcInnerAddress     structure.AddressConfiguration
 	ModuleName           string
-	InstanceUuid         string
 }
 
 // runner must prepare environment for test, defer all resources closing and finally call runTest
@@ -115,9 +112,8 @@ type Testable interface {
 }
 
 type BaseTestConfiguration struct {
-	ModuleName   string
-	InstanceUuid string
-	Registry     struct {
+	ModuleName string
+	Registry   struct {
 		Host     string
 		Username string
 		Password string
@@ -218,7 +214,6 @@ func (ctx *TestContext) GetModuleLocalConfig(port, moduleName string) DefaultLoc
 		GrpcOuterAddress:     structure.AddressConfiguration{Port: port, IP: ctx.GetContainer(moduleName)},
 		GrpcInnerAddress:     structure.AddressConfiguration{Port: port, IP: bindAddress},
 		ModuleName:           moduleName,
-		InstanceUuid:         ctx.baseCfg.InstanceUuid,
 	}
 }
 
@@ -234,7 +229,7 @@ func (ctx *TestContext) buildName() string {
 	return ctx.baseCfg.ModuleName + CurrentSessionName()
 }
 
-// crate integration test context, load test configuration from file
+// NewIntegrationTest creates integration test context, loads test configuration from file.
 func NewIntegrationTest(m *testing.M, configPtr Testable, runner Runner) (*IntegrationTestRunner, error) {
 	ctx, err := loadCtx(configPtr)
 	if err != nil {
