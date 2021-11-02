@@ -1,3 +1,5 @@
+### v1.7.0
+* remove nats utils
 ### v1.6.5
 * utils.TimeoutRetryer: remove unnecessary waiting before first attempt of retryer
 * remove deprecated InstanceUuid

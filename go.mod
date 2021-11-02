@@ -9,13 +9,13 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/integration-system/bellows v1.0.1
 	github.com/integration-system/isp-event-lib v1.6.5
-	github.com/integration-system/isp-lib/v2 v2.8.6
+	github.com/integration-system/isp-lib/v2 v2.10.0
 	github.com/integration-system/isp-log v1.1.8
 	github.com/olivere/elastic v6.2.29+incompatible
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/viper v1.7.1
+	github.com/spf13/viper v1.8.1
 	github.com/streadway/amqp v1.0.0
 	github.com/stretchr/testify v1.7.0
-	google.golang.org/grpc v1.37.1
+	google.golang.org/grpc v1.38.0
 	gopkg.in/yaml.v2 v2.4.0
 )
